@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>ใต้โต๊ะเหมยลี่</title>
+  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: var(--tg-theme-bg-color, #0b1020);
+      --panel: var(--tg-theme-secondary-bg-color, #151c30);
+      --text: var(--tg-theme-text-color, #f8fafc);
+      --muted: var(--tg-theme-hint-color, #a5b4cf);
+      --button: var(--tg-theme-button-color, #4f7cff);
+      --button-text: var(--tg-theme-button-text-color, #ffffff);
+      --line: rgba(148, 163, 184, .18);
+      --live: #ff365f;
+      --kick: #53fc18;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: max(18px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+      background:
+        radial-gradient(circle at 15% 5%, rgba(79, 124, 255, .22), transparent 34%),
+        radial-gradient(circle at 90% 22%, rgba(139, 92, 246, .16), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(100%, 520px);
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #5b8cff, #8b5cf6);
+      box-shadow: 0 12px 30px rgba(79, 124, 255, .28);
+      font-size: 23px;
+    }
+
+    h1, h2, p { margin: 0; }
+    h1 { font-size: 20px; }
+    h2 { font-size: 16px; }
+    .muted { color: var(--muted); font-size: 13px; }
+
+    .card {
+      margin-bottom: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--panel) 92%, transparent);
+      box-shadow: 0 14px 35px rgba(0, 0, 0, .18);
+    }
+
+    .status-row, .section-title, .schedule-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .live-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 800;
+    }
+
+    .live-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--live);
+      box-shadow: 0 0 0 5px rgba(255, 54, 95, .15), 0 0 18px rgba(255, 54, 95, .8);
+    }
+
+    .badge {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(255, 54, 95, .13);
+      color: #ff86a0;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:active { transform: scale(.98); }
+    .twitch { background: linear-gradient(135deg, #9146ff, #6b21d7); }
+    .kick { background: #1b2b18; color: var(--kick); border: 1px solid rgba(83, 252, 24, .45); }
+
+    .section-title { margin-bottom: 11px; }
+
+    .schedule-list {
+      display: grid;
+      gap: 2px;
+    }
+
+    .schedule-row {
+      padding: 11px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .schedule-row:first-child { border-top: 0; }
+    .schedule-row strong { text-align: right; font-size: 14px; }
+
+    details {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 800;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    .event-body {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .event-body strong { color: var(--text); }
+
+    .footer {
+      padding: 4px 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 360px) {
+      .buttons { grid-template-columns: 1fr; }
+      .schedule-row { align-items: flex-start; flex-direction: column; }
+      .schedule-row strong { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="header">
+      <div class="logo" aria-hidden="true">✨</div>
+      <div>
+        <h1>ใต้โต๊ะเหมยลี่</h1>
+        <p class="muted">ศูนย์รวมไลฟ์และกิจกรรมล่าสุด</p>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="live-heading">
+      <div class="status-row">
+        <div class="live-title" id="live-heading">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>เหมยลี่กำลัง LIVE</span>
+        </div>
+        <span class="badge">LIVE NOW</span>
+      </div>
+      <p class="muted" style="margin-top:7px">เลือกช่องทางที่ต้องการรับชม</p>
+      <div class="buttons">
+        <button class="twitch" type="button" data-url="https://www.twitch.tv/MeiliexPim">🎮 Twitch · MeiliexPim</button>
+        <button class="kick" type="button" data-url="https://kick.com/meiliebugmee">▶ Kick · meiliebugmee</button>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="schedule-heading">
+      <div class="section-title">
+        <h2 id="schedule-heading">📅 ตารางไลฟ์</h2>
+        <span class="muted">อัปเดตรายสัปดาห์</span>
+      </div>
+      <div class="schedule-list">
+        <div class="schedule-row"><span>เหมยลี่</span><strong>อังคาร–เสาร์ · เวลาแจ้งในกลุ่ม</strong></div>
+        <div class="schedule-row"><span>พิมมี่</span><strong>เสาร์–อาทิตย์ · เวลาแจ้งในกลุ่ม</strong></div>
+        <div class="schedule-row"><span>แอดจี้</span><strong>ทุกวัน · เวลาแจ้งในกลุ่ม</strong></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="event-heading">
+      <div class="section-title">
+        <h2 id="event-heading">🎁 กิจกรรมล่าสุด</h2>
+        <span class="badge">กำลังเปิด</span>
+      </div>
+      <details>
+        <summary>กิจกรรมพิเศษ 2 ต่อ · กดดูรายละเอียด</summary>
+        <div class="event-body">
+          <strong>ต่อที่ 1</strong>
+          <span>เหมาแจกฟรีเกม 375 บาท จำนวน 10 คน</span>
+          <span>แตกเท่าไหร่เอาไปเลย! ไม่แตกการันตี 100 บาท</span>
+          <strong>ต่อที่ 2</strong>
+          <span>ทุกการแตก 20,000 แจก 100 บาท ไม่จำกัดจำนวน</span>
+        </div>
+      </details>
+    </section>
+
+    <p class="footer">MeiliexBot · Telegram Mini App</p>
+  </main>
+
+  <script>
+    const telegramApp = window.Telegram && window.Telegram.WebApp;
+
+    if (telegramApp) {
+      telegramApp.ready();
+      telegramApp.expand();
+    }
+
+    document.querySelectorAll("[data-url]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const targetUrl = button.getAttribute("data-url");
+        if (telegramApp) {
+          telegramApp.openLink(targetUrl);
+        } else {
+          window.location.href = targetUrl;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
