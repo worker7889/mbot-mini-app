@@ -22,7 +22,7 @@
 </svg>
 
 <main class="app-shell">
-  <header class="brand-bar"><div class="brand-gem">◇</div><div><strong>Meiliex Mini App</strong><small>ใต้โต๊ะเหมยลี่ Community</small></div><span>● ข้อมูลตัวอย่าง</span></header>
+  <header class="brand-bar"><div class="brand-gem">◇</div><div><strong>Meiliex Mini App</strong><small>ใต้โต๊ะเหมยลี่ Community</small></div><span id="sync-state" class="loading">● กำลังเชื่อมต่อ...</span></header>
   <div class="page">
     <section data-page="home">
       <section class="hero-shell fantasy-panel"><div class="hero-track" id="hero-track"></div><div class="dots"><span class="active"></span><span></span><span></span></div></section>
@@ -60,7 +60,10 @@
 
 <script>
 const icon=n=>`<svg class="icon"><use href="#${n}"/></svg>`;
-const streamers=[
+const API_URL="https://meiliex-live-status-api.worker7889.workers.dev/";
+const REFRESH_INTERVAL=60000;
+let currentPage="home";
+let streamers=[
  {id:"meilie",name:"เหมยลี่",handle:"MeiliexPim",live:true,avatar:"meilie.png",banner:"meilie-live-banner.webp",twitch:"https://twitch.tv/MeiliexPim",kick:"https://kick.com/meiliebugmee",accent:"blue"},
  {id:"pimmy",name:"พิมมี่",handle:"meichx",live:false,avatar:"pimmy.png",banner:"pimmy-live-banner.webp",twitch:"https://twitch.tv/meichx",kick:"https://kick.com/pimmysocute",accent:"pink"},
  {id:"bamby",name:"แบมบี้",handle:"gigixbambam",live:false,avatar:"bamby.png",banner:"bamby-live-banner.webp",twitch:"https://twitch.tv/gigixbambam",kick:"https://kick.com/gigixbambam",accent:"red"}
@@ -69,18 +72,42 @@ const nav=[["home","หน้าหลัก","home"],["live","ดูไลฟ�
 const communityLinks={channel:"",group:""};
 const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor("#071343");tg.setBackgroundColor("#02051b")}
 function openURL(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener")}
+function safeText(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}
 function render(){
- document.querySelector("#hero-track").innerHTML=streamers.map(s=>`<article class="hero ${s.accent}" style="background-image:url('${s.banner}')"><div class="hero-shade"></div><div class="hero-content"><span class="live-pill ${s.live?"on":"off"}">${s.live?"● LIVE NOW":"OFFLINE"}</span><h1>${s.name}</h1><p>${s.live?"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย":"ยังไม่ได้ไลฟ์ แวะไปติดตามช่องไว้ก่อนได้เลย"}</p><a class="hero-button ${s.live?"watch":"channel"}" href="${s.twitch}" target="_blank">${s.live?"รับชมเลย":"ไปที่ช่อง"} ${icon("chevron")}</a></div></article>`).join("");
+ document.querySelector("#hero-track").innerHTML=streamers.map(s=>`<article class="hero ${s.accent}" style="background-image:url('${s.banner}')"><div class="hero-shade"></div><div class="hero-content"><span class="live-pill ${s.live?"on":"off"}">${s.live?"● LIVE NOW":"OFFLINE"}</span><h1>${s.name}</h1><p>${s.live?safeText(s.title||"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย"):"ยังไม่ได้ไลฟ์ แวะไปติดตามช่องไว้ก่อนได้เลย"}</p><a class="hero-button ${s.live?"watch":"channel"}" href="${s.twitch}" target="_blank" rel="noopener">${s.live?"รับชมเลย":"ไปที่ช่อง"} ${icon("chevron")}</a></div></article>`).join("");
  document.querySelector("#quick-menu").innerHTML=nav.slice(1).map((n,i)=>`<button class="skill-button c${i}" data-go="${n[0]}"><b>${icon(n[2])}</b><span>${n[1]}</span></button>`).join("");
- document.querySelector("#status-list").innerHTML=streamers.map(s=>`<div class="status-row"><i class="energy ${s.live?"on":""}"></i><div class="avatar-frame"><img src="${s.avatar}" alt="${s.name}"></div><div class="status-copy"><strong>${s.name}</strong><small>${s.live?"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย":"Twitch · "+s.handle}</small></div><span class="status-badge ${s.live?"on":""}">${s.live?"● LIVE":"OFFLINE"}</span><a class="twitch-mini" href="${s.twitch}" target="_blank">T</a></div>`).join("");
+ document.querySelector("#status-list").innerHTML=streamers.map(s=>`<div class="status-row"><i class="energy ${s.live?"on":""}"></i><div class="avatar-frame"><img src="${s.avatar}" alt="${s.name}"></div><div class="status-copy"><strong>${s.name}</strong><small>${s.live?safeText(s.title||"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย"):"Twitch · "+s.handle}</small></div><span class="status-badge ${s.live?"on":""}">${s.live?"● LIVE":"OFFLINE"}</span><a class="twitch-mini" href="${s.twitch}" target="_blank" rel="noopener">T</a></div>`).join("");
  document.querySelector("#streamer-cards").innerHTML=streamers.map(s=>`<article class="streamer-card fantasy-panel"><div class="stream-head"><div class="avatar-frame large"><img src="${s.avatar}" alt="${s.name}"></div><div><h2>${s.name}</h2><span class="status-badge ${s.live?"on":""}">${s.live?"● กำลังไลฟ์":"OFFLINE"}</span></div></div><div class="channel-grid"><a class="twitch" href="${s.twitch}" target="_blank">Twitch ${icon("chevron")}</a><a class="kick" href="${s.kick}" target="_blank">Kick ${icon("chevron")}</a></div></article>`).join("");
- document.querySelector("#bottom-nav").innerHTML=nav.map(n=>`<button class="${n[0]==="home"?"active":""}" data-go="${n[0]}">${icon(n[2])}<span>${n[1]}</span></button>`).join("");
+ document.querySelector("#bottom-nav").innerHTML=nav.map(n=>`<button class="${n[0]===currentPage?"active":""}" data-go="${n[0]}">${icon(n[2])}<span>${n[1]}</span></button>`).join("");
 }
-function showPage(id){document.querySelectorAll("[data-page]").forEach(x=>x.hidden=x.dataset.page!==id);document.querySelectorAll("#bottom-nav button").forEach(x=>x.classList.toggle("active",x.dataset.go===id));window.scrollTo({top:0,behavior:"smooth"})}
+function showPage(id){currentPage=id;document.querySelectorAll("[data-page]").forEach(x=>x.hidden=x.dataset.page!==id);document.querySelectorAll("#bottom-nav button").forEach(x=>x.classList.toggle("active",x.dataset.go===id));window.scrollTo({top:0,behavior:"smooth"})}
+function setSyncState(text,state){const el=document.querySelector("#sync-state");el.textContent=text;el.className=state}
+async function loadLiveStatus(){
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
+ setSyncState("● กำลังอัปเดต...","loading");
+ try{
+  const response=await fetch(API_URL,{cache:"no-store",headers:{Accept:"application/json"},signal:controller.signal});
+  if(!response.ok)throw new Error(`HTTP ${response.status}`);
+  const data=await response.json();
+  if(!data.ok||!Array.isArray(data.streamers))throw new Error("รูปแบบข้อมูลไม่ถูกต้อง");
+  const statusByLogin=new Map(data.streamers.map(item=>[String(item.login||item.handle||item.id||"").toLowerCase(),item]));
+  streamers=streamers.map((local,order)=>{
+   const remote=statusByLogin.get(local.handle.toLowerCase())||data.streamers.find(item=>item.id===local.id);
+   return remote?{...local,order,live:Boolean(remote.live),title:remote.title||"",game:remote.game||remote.game_name||"",viewers:Number(remote.viewers||remote.viewer_count||0),startedAt:remote.started_at||null}:{...local,order,live:false};
+  }).sort((a,b)=>Number(b.live)-Number(a.live)||a.order-b.order);
+  render();
+  setSyncState(`● อัปเดต ${new Date().toLocaleTimeString("th-TH",{hour:"2-digit",minute:"2-digit"})}`,"ok");
+ }catch(error){
+  console.error("Live status update failed:",error);
+  setSyncState("● เชื่อมต่อไม่ได้","error");
+ }finally{clearTimeout(timeout)}
+}
 document.addEventListener("click",e=>{const go=e.target.closest("[data-go]"),community=e.target.closest("[data-community]");if(go)showPage(go.dataset.go);if(community)openURL(communityLinks[community.dataset.community])});
 const track=document.querySelector("#hero-track");track.addEventListener("scroll",()=>{const i=Math.round(track.scrollLeft/track.clientWidth);document.querySelectorAll(".dots span").forEach((x,n)=>x.classList.toggle("active",n===i))});
 const activity=document.querySelector("#activity-image"),placeholder=document.querySelector("#activity-placeholder");activity.addEventListener("error",()=>{activity.hidden=true;placeholder.hidden=false});placeholder.hidden=true;
 render();
+loadLiveStatus();
+setInterval(loadLiveStatus,REFRESH_INTERVAL);
 </script>
 </body>
 </html>
