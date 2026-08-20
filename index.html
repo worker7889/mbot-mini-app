@@ -69,7 +69,7 @@ let streamers=[
  {id:"bamby",name:"แบมบี้",handle:"gigixbambam",live:false,avatar:"bamby.png",banner:"bamby-live-banner.webp",twitch:"https://twitch.tv/gigixbambam",kick:"https://kick.com/gigixbambam",accent:"red"}
 ];
 const nav=[["home","หน้าหลัก","home"],["live","ดูไลฟ์","video"],["events","กิจกรรม","gift"],["community","กลุ่มพูดคุย","chat"],["help","แจ้งปัญหา","alert"]];
-const communityLinks={channel:"",group:""};
+const communityLinks={channel:"https://t.me/+oR2eq3nlCnI1OWNl",group:"https://t.me/+LcKeQoIhOx83OTM9"};
 const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor("#071343");tg.setBackgroundColor("#02051b")}
 function openURL(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener")}
 function safeText(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}
