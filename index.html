@@ -3,127 +3,84 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#020817">
+  <meta name="theme-color" content="#02051b">
   <title>Meiliex Mini App</title>
+  <link rel="stylesheet" href="style.css">
   <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
-  <style>
-    :root{color-scheme:dark;--bg:#020817;--card:#06152f;--card2:#071d40;--text:#f5f9ff;--muted:#9eb3d0;--blue:#168bff;--cyan:#00d9ff;--live:#ff344d;--twitch:#9146ff;--line:rgba(57,151,255,.38)}
-    *{box-sizing:border-box} [hidden]{display:none!important} html{scroll-behavior:smooth}
-    body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 10% 0,rgba(0,132,255,.25),transparent 30%),radial-gradient(circle at 100% 35%,rgba(0,217,255,.13),transparent 28%),linear-gradient(#020817,#03132e 55%,#020817);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:linear-gradient(rgba(71,151,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(71,151,255,.14) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(#000,transparent 80%)}
-    button{font:inherit}.app{position:relative;width:min(100%,540px);min-height:100vh;margin:auto;padding:max(15px,env(safe-area-inset-top)) 14px calc(94px + env(safe-area-inset-bottom))}h1,h2,h3,p{margin:0}.muted{color:var(--muted)}
-    svg.icon{width:1em;height:1em;display:block;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.topbar{display:flex;align-items:center;gap:10px;min-height:52px;margin-bottom:14px}.mark{width:44px;height:44px;display:grid;place-items:center;flex:none;border:1px solid #55baff;border-radius:14px;background:linear-gradient(145deg,#1456d6,#08c9ff);box-shadow:0 0 22px rgba(0,163,255,.35);color:#dff8ff;font-size:25px}.mark .icon{filter:drop-shadow(0 0 6px #9eeaff)}.brand h1{font-size:17px}.brand p{margin-top:2px;font-size:11px}.sync{margin-left:auto;color:#6ce8ff;font-size:10px;white-space:nowrap}.sync:before{content:"";display:inline-block;width:7px;height:7px;margin-right:5px;border-radius:50%;background:#39e8b0;box-shadow:0 0 9px #39e8b0}
-    .page{animation:enter .24s ease}@keyframes enter{from{opacity:0;transform:translateY(7px)}}.page-title{margin:5px 2px 14px}.page-title h2{font-size:22px}.page-title p{margin-top:4px;font-size:12px}
-    .panel{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(7,29,64,.97),rgba(3,13,34,.98));box-shadow:0 15px 36px rgba(0,0,0,.27),inset 0 1px rgba(255,255,255,.04)}
-    .hero{min-height:226px;display:flex;align-items:flex-end;margin-bottom:16px;padding:17px;isolation:isolate}.hero:before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(1,7,22,.98) 0%,rgba(2,11,31,.88) 31%,rgba(2,11,31,.34) 58%,rgba(2,11,31,.06) 100%)}.hero:after{content:"";position:absolute;z-index:-1;inset:auto 0 0;height:60%;background:linear-gradient(transparent,rgba(1,7,22,.72))}.hero-img{position:absolute;z-index:-3;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center}.hero-copy{position:relative;z-index:1;width:58%}.pill{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:5px 9px;margin-bottom:10px;border:1px solid rgba(255,52,77,.7);border-radius:99px;background:rgba(48,8,20,.72);color:#ff5d70;font-size:11px;font-weight:900;backdrop-filter:blur(5px)}.pulse{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.7s infinite}@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(255,52,77,0)}}.hero h2{font-size:clamp(25px,8vw,32px);text-shadow:0 2px 12px #000}.hero p{margin-top:5px;color:#d5e5f7;font-size:12px;line-height:1.5;text-shadow:0 2px 8px #000}
-    .primary{min-height:45px;display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:13px;padding:10px 18px;border:1px solid #38bdff;border-radius:12px;color:#fff;background:linear-gradient(135deg,#0aa4ff,#1555e6);box-shadow:0 8px 20px rgba(12,113,255,.34);font-weight:800;cursor:pointer}.primary:active,.quick:active,.channel:active,.community-btn:active{transform:scale(.98)}
-    .section-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 9px}.section-head h3{font-size:15px}.link{border:0;padding:5px;color:#76dfff;background:none;font-size:11px;cursor:pointer}
-    .stream-list{margin-bottom:16px;padding:3px 14px}.stream-row{min-height:66px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(117,171,238,.15)}.stream-row:last-child{border:0}.avatar-wrap{position:relative;flex:none}.avatar{width:44px;height:44px;display:block;object-fit:cover;border:1px solid rgba(105,174,255,.5);border-radius:50%;background:#fff}.avatar.live{border:2px solid var(--live);box-shadow:0 0 13px rgba(255,52,77,.5)}.dot{position:absolute;right:0;bottom:1px;width:10px;height:10px;border:2px solid var(--card);border-radius:50%;background:#6c7d97}.dot.live{background:var(--live)}.stream-copy{min-width:0;flex:1}.stream-copy strong{display:block;font-size:14px}.stream-copy span{display:block;margin-top:2px;overflow:hidden;color:var(--muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}.state{padding:4px 8px;border-radius:99px;background:#152541;color:#c0cee0;font-size:9px;font-weight:900}.state.live{background:linear-gradient(135deg,#ff263f,#e24277);color:#fff}.tw-mini{width:31px;height:31px;border:0;border-radius:9px;color:#fff;background:var(--twitch);font-weight:900;cursor:pointer}
-    .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}.quick{min-height:91px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px 3px;border:1px solid rgba(36,139,255,.72);border-radius:13px;color:#eaf5ff;background:linear-gradient(160deg,rgba(7,44,91,.92),rgba(3,15,39,.98));font-size:11px;cursor:pointer}.quick.active{border-color:#ffd65c;box-shadow:0 0 14px rgba(255,208,67,.28)}.quick .icon{width:27px;height:27px;color:#5bd0ff;filter:drop-shadow(0 0 8px rgba(0,174,255,.7))}
-    .feature{min-height:165px;padding:18px}.feature-art{position:absolute;right:20px;bottom:18px;width:64px!important;height:64px!important;color:#59cfff;filter:drop-shadow(0 0 18px rgba(0,153,255,.65));transform:rotate(-7deg)}.feature small{color:#7de4ff}.feature h3{width:68%;margin-top:6px;font-size:21px}.feature p{width:68%;margin-top:6px;font-size:12px;line-height:1.5}
-    .cards{display:grid;gap:12px}.stream-card{padding:15px}.card-head{display:flex;align-items:center;gap:12px}.card-head .avatar{width:58px;height:58px}.details{min-width:0;flex:1}.details h3{font-size:17px}.details p{margin-top:4px;font-size:11px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.actions.single{grid-template-columns:1fr}.channel{min-height:44px;border:0;border-radius:11px;color:#fff;font-weight:800;cursor:pointer}.twitch{background:linear-gradient(135deg,#a05cff,#6126cb)}.kick{border:1px solid rgba(83,252,24,.6);color:#53fc18;background:#10250d}
-    .activity{margin-bottom:12px}.activity-visual{aspect-ratio:1;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 70% 30%,rgba(0,217,255,.28),transparent 35%),radial-gradient(circle at 20% 78%,rgba(87,64,255,.32),transparent 32%),linear-gradient(145deg,#06204c,#040b20)}.activity-visual img{width:100%;height:100%;object-fit:cover}.placeholder{text-align:center}.placeholder .icon{width:70px;height:70px;margin:auto;color:#5edcff;filter:drop-shadow(0 0 17px #087dff)}.activity-body{padding:16px}.activity-body h3{font-size:19px}.activity-body p{margin-top:7px;font-size:12px;line-height:1.6}
-    .community{margin-bottom:13px;padding:17px;border-color:rgba(0,206,255,.55)}.community-head{display:flex;align-items:center;gap:13px}.community-icon{width:62px;height:62px;display:grid;place-items:center;flex:none;border:1px solid #42d7ff;border-radius:50%;background:radial-gradient(circle,rgba(28,166,255,.45),rgba(4,17,45,.9));box-shadow:0 0 18px rgba(0,191,255,.42);color:#64dcff}.community-icon .icon{width:31px;height:31px;filter:drop-shadow(0 0 7px #159cff)}.community h3{font-size:17px}.community-head p{margin-top:4px;font-size:11px;line-height:1.5}.benefits{display:grid;gap:7px;margin:14px 0;padding:0;list-style:none}.benefits li{color:#c2d2e8;font-size:12px}.benefits li:before{content:"✓";margin-right:8px;color:#19baff;font-weight:900}.community-btn{width:100%;min-height:49px;border:1px solid #41d9ff;border-radius:13px;color:#fff;background:linear-gradient(135deg,#0899dd,#1760ee);font-weight:800;cursor:pointer}.community-btn .icon{width:20px;height:20px;display:inline-block;vertical-align:-5px;margin-right:6px}
-    .help{padding:22px 17px;text-align:center}.help-icon{width:72px;height:72px;display:grid;place-items:center;margin:0 auto 13px;border:1px solid #32ccff;border-radius:22px;background:rgba(5,120,255,.15);box-shadow:0 0 20px rgba(0,169,255,.25);color:#65dfff}.help-icon .icon{width:38px;height:38px;filter:drop-shadow(0 0 8px #168bff)}.help h3{font-size:20px}.help p{max-width:340px;margin:7px auto 14px;font-size:12px;line-height:1.6}
-    .nav{position:fixed;z-index:20;left:50%;bottom:0;width:min(100%,540px);min-height:calc(78px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);padding:6px 7px calc(6px + env(safe-area-inset-bottom));border-top:1px solid rgba(49,134,245,.48);background:rgba(2,10,27,.94);box-shadow:0 -12px 28px rgba(0,0,0,.35);backdrop-filter:blur(16px);transform:translateX(-50%)}.nav button{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;border-radius:12px;color:#8093b0;background:none;font-size:9px;cursor:pointer}.nav button.active{color:#55dfff;background:rgba(0,132,255,.13)}.nav .icon{width:22px;height:22px;filter:drop-shadow(0 0 6px currentColor)}
-    .empty .hero-img{opacity:.43;filter:grayscale(.2)}.empty .pill{border-color:#7185a3;color:#b3c3d8;background:rgba(25,39,62,.75)}.empty .pulse{animation:none}
-    /* Modern Ragnarok-inspired skin — เปลี่ยนเฉพาะงานภาพ ไม่แตะข้อมูลและการทำงาน */
-    :root{--royal:#1677dc;--sky:#6bdcff;--ice:#bdefff;--gold:#f5d77a;--deep:#03152f}
-    body{background:radial-gradient(circle at 50% -10%,rgba(75,174,255,.35),transparent 34%),radial-gradient(circle at 8% 36%,rgba(45,104,207,.24),transparent 25%),radial-gradient(circle at 92% 55%,rgba(104,84,214,.17),transparent 26%),linear-gradient(180deg,#041630 0%,#061d3d 48%,#020c1e 100%)}
-    body:after{content:"✦";position:fixed;z-index:-1;inset:7% auto auto 6%;color:rgba(157,224,255,.38);font-size:20px;text-shadow:120px 55px rgba(157,224,255,.22),280px 5px rgba(245,215,122,.22),420px 100px rgba(157,224,255,.2),70px 390px rgba(157,224,255,.18),390px 520px rgba(245,215,122,.17);pointer-events:none}
-    .mark{border:2px solid #9be8ff;border-radius:12px;background:radial-gradient(circle at 50% 32%,#70e5ff,#237ad9 55%,#092c69);box-shadow:0 0 0 2px rgba(245,215,122,.36),0 0 24px rgba(77,192,255,.55),inset 0 0 12px rgba(255,255,255,.25)}
-    .mark:before,.mark:after{content:"";position:absolute;width:8px;height:8px;border:1px solid var(--gold);transform:rotate(45deg)}.mark:before{margin:-38px 0 0 -38px}.mark:after{margin:38px -38px 0 0}
-    .brand h1{font-weight:900;letter-spacing:.3px;text-shadow:0 2px 10px rgba(74,188,255,.4)}
-    .panel{border:1px solid rgba(143,220,255,.72);background:linear-gradient(155deg,rgba(10,43,86,.97),rgba(3,18,43,.98));box-shadow:0 0 0 2px rgba(8,42,91,.95),0 0 0 3px rgba(245,215,122,.22),0 16px 36px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.11),inset 0 0 24px rgba(23,116,219,.13)}
-    .panel:before{border-radius:inherit}
-    .hero{border-color:#8de5ff;box-shadow:0 0 0 2px #0c3976,0 0 0 3px rgba(245,215,122,.5),0 12px 34px rgba(0,0,0,.35),inset 0 0 26px rgba(34,138,255,.22)}
-    .hero:before{background:linear-gradient(90deg,rgba(1,12,35,.99) 0%,rgba(3,23,54,.9) 33%,rgba(3,20,48,.38) 59%,rgba(3,20,48,.06) 100%)}
-    .pill{border-color:#ff6b82;background:linear-gradient(180deg,rgba(116,17,43,.9),rgba(52,8,25,.92));box-shadow:0 0 0 1px rgba(255,185,199,.15),inset 0 1px rgba(255,255,255,.18),0 0 12px rgba(255,52,77,.22)}
-    .primary{border:1px solid #b7eeff;border-radius:11px;background:linear-gradient(180deg,#3ab8ff 0%,#177cdd 48%,#0b4ca7 100%);box-shadow:0 0 0 2px #082c67,0 0 0 3px rgba(245,215,122,.56),0 8px 20px rgba(8,80,175,.4),inset 0 2px rgba(255,255,255,.28);text-shadow:0 1px 3px #073375}
-    .primary:hover{filter:brightness(1.1);box-shadow:0 0 0 2px #082c67,0 0 0 3px var(--gold),0 0 18px rgba(87,211,255,.55)}
-    .section-head{min-height:28px;padding:0 8px;border-bottom:1px solid rgba(112,206,255,.2)}
-    .section-head h3{position:relative;color:#ecf9ff;text-shadow:0 1px 8px rgba(74,193,255,.4)}
-    .section-head h3:before{content:"◆";margin-right:7px;color:var(--gold);font-size:9px;text-shadow:0 0 8px var(--gold)}
-    .link{color:#9beaff;font-weight:800}
-    .stream-list{border-radius:13px;background:linear-gradient(180deg,rgba(9,45,91,.96),rgba(4,25,58,.98))}
-    .stream-row{position:relative;border-bottom-color:rgba(117,198,241,.2)}
-    .stream-row:before{content:"";width:3px;height:28px;border-radius:2px;background:linear-gradient(var(--sky),#246dd2);box-shadow:0 0 8px rgba(65,193,255,.6)}
-    .avatar{border:2px solid #9ee8ff;box-shadow:0 0 0 2px #123c78,0 0 0 3px rgba(245,215,122,.38)}
-    .avatar.live{border-color:#ff7387;box-shadow:0 0 0 2px #5f1530,0 0 0 3px rgba(245,215,122,.48),0 0 16px rgba(255,52,77,.55)}
-    .state{border:1px solid rgba(143,190,239,.25);background:linear-gradient(#27466f,#142948);box-shadow:inset 0 1px rgba(255,255,255,.12)}
-    .state.live{border-color:#ff8a9a;background:linear-gradient(#ff5770,#c71d48);box-shadow:0 0 10px rgba(255,52,77,.35),inset 0 1px rgba(255,255,255,.25)}
-    .tw-mini{border:1px solid #c9a8ff;background:linear-gradient(#a46aff,#6434ce);box-shadow:0 0 0 2px #301572,0 0 10px rgba(145,70,255,.35)}
-    .quick-grid{gap:10px}.quick{position:relative;min-height:100px;border:1px solid #8cdfff;border-radius:12px;background:linear-gradient(165deg,rgba(15,66,126,.98),rgba(4,26,62,.99));box-shadow:0 0 0 2px #082c64,0 0 0 3px rgba(245,215,122,.26),inset 0 1px rgba(255,255,255,.13),inset 0 -15px 22px rgba(1,11,34,.33);font-weight:800}.quick:before,.quick:after{content:"";position:absolute;width:7px;height:7px;border-color:rgba(245,215,122,.75);border-style:solid}.quick:before{left:5px;top:5px;border-width:1px 0 0 1px}.quick:after{right:5px;bottom:5px;border-width:0 1px 1px 0}.quick .icon{width:38px;height:38px;padding:7px;border:1px solid #9ce9ff;border-radius:12px;color:#bcefff;background:radial-gradient(circle,#2f9ce8,#0b397d 70%);box-shadow:0 0 0 2px #082a60,0 0 13px rgba(66,199,255,.45),inset 0 2px rgba(255,255,255,.22)}.quick.active{border-color:#ffe39a;box-shadow:0 0 0 2px #082c64,0 0 0 3px var(--gold),0 0 18px rgba(99,210,255,.44)}
-    .feature{background:radial-gradient(circle at 85% 35%,rgba(73,164,255,.22),transparent 34%),linear-gradient(145deg,rgba(12,56,110,.98),rgba(4,25,60,.99))}.feature-art{color:#8be7ff;filter:drop-shadow(0 0 14px #168bff)}
-    .page-title{padding:10px 13px;border-left:3px solid var(--gold);background:linear-gradient(90deg,rgba(32,119,209,.2),transparent)}.page-title h2{font-weight:900;text-shadow:0 2px 10px rgba(69,181,255,.45)}
-    .stream-card,.community,.help,.activity{border-radius:14px}.channel{border:1px solid rgba(255,255,255,.34);box-shadow:0 0 0 2px rgba(4,25,62,.9),inset 0 1px rgba(255,255,255,.2)}
-    .community-icon,.help-icon{border:2px solid #a4eaff;box-shadow:0 0 0 2px #0b3673,0 0 0 3px rgba(245,215,122,.42),0 0 18px rgba(0,191,255,.38)}
-    .community-btn{border:1px solid #b9efff;background:linear-gradient(180deg,#35b8f5,#1379ce 52%,#0a4a9d);box-shadow:0 0 0 2px #072b62,0 0 0 3px rgba(245,215,122,.48),inset 0 2px rgba(255,255,255,.23)}
-    .nav{gap:6px;padding-top:7px;border-top:1px solid #9be4ff;background:linear-gradient(180deg,rgba(7,36,78,.97),rgba(2,15,39,.98));box-shadow:0 -2px 0 rgba(245,215,122,.3),0 -14px 28px rgba(0,0,0,.4)}.nav button{position:relative;border:1px solid rgba(99,157,219,.26);border-radius:9px;background:linear-gradient(180deg,rgba(29,69,119,.38),rgba(4,23,54,.55));box-shadow:inset 0 1px rgba(255,255,255,.06)}.nav button.active{border-color:#86e5ff;color:#b9f2ff;background:radial-gradient(circle at 50% 28%,rgba(46,172,244,.38),rgba(8,47,100,.72));box-shadow:0 0 0 1px rgba(245,215,122,.5),0 0 14px rgba(38,183,255,.35),inset 0 1px rgba(255,255,255,.15)}.nav .icon{filter:drop-shadow(0 0 7px currentColor)}
-    /* Final electric-blue fantasy UI */
-    body:before{opacity:.28;background-image:radial-gradient(circle,transparent 30%,rgba(87,220,255,.3) 30.4%,transparent 31%),radial-gradient(circle,transparent 42%,rgba(111,70,255,.25) 42.4%,transparent 43%),linear-gradient(rgba(71,151,255,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(71,151,255,.12) 1px,transparent 1px);background-size:620px 620px,620px 620px,42px 42px,42px 42px;background-position:50% 100px,50% 100px,0 0,0 0;mask-image:linear-gradient(#000,transparent 92%)}
-    .hero-carousel{margin-bottom:16px;overflow:hidden}.hero-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none}.hero-track::-webkit-scrollbar{display:none}.hero-track .hero{min-width:100%;margin:0;border:0;border-radius:15px;scroll-snap-align:start}.hero-dots{height:24px;display:flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(90deg,#07113c,#102b72,#1c0e53)}.hero-dots i{width:7px;height:7px;border-radius:50%;background:#60709d}.hero-dots i:first-child{width:22px;border-radius:8px;background:linear-gradient(90deg,#45e5ff,#7154ff);box-shadow:0 0 10px #33caff}.pill.offline{border-color:#7f8db6;color:#c3cde5;background:#273253cc}.primary.offline{border-color:#8999c8;background:linear-gradient(#526286,#283454);box-shadow:0 0 0 2px #182040,0 0 0 3px rgba(245,215,122,.35)}
-    .feature{display:flex;align-items:center;overflow:hidden;background:radial-gradient(circle at 82% 42%,rgba(61,186,255,.45),transparent 25%),radial-gradient(circle at 90% 70%,rgba(111,61,255,.38),transparent 27%),linear-gradient(120deg,#071640,#0d347f 62%,#29136a)}.feature:after{content:"QUEST";position:absolute;right:24px;bottom:18px;color:#ccecff;font-size:10px;font-weight:900;letter-spacing:3px;text-shadow:0 0 8px #49dfff}.feature-art{right:38px;bottom:55px;width:72px!important;height:72px!important;padding:15px;border:2px solid #7be9ff;border-radius:20px;color:#fff3a7;background:linear-gradient(135deg,#1765d8,#6a3ae7);box-shadow:0 0 20px #38c9ff,inset 0 0 12px #d3c1ff;transform:rotate(45deg)}.feature-art use{transform:rotate(-45deg);transform-origin:center}.help .community-btn{border-color:#76ffa0;background:linear-gradient(#22d45d,#08a53a);box-shadow:0 0 0 2px #087c2d,0 0 14px rgba(22,210,82,.35)}
-    @media(max-width:375px){.app{padding-inline:11px}.sync{display:none}.quick-grid{gap:6px}.quick{min-height:84px;font-size:9px}.hero-copy{width:70%}.actions{grid-template-columns:1fr}}
-    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
-  </style>
 </head>
 <body>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <symbol id="i-diamond" viewBox="0 0 24 24"><path d="M12 2 22 12 12 22 2 12Z"/><path d="m12 6 6 6-6 6-6-6Z"/></symbol>
-    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></symbol>
-    <symbol id="i-video" viewBox="0 0 24 24"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 6-3v10l-6-3Z"/></symbol>
-    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8H7.5A2.5 2.5 0 1 1 10 5.5ZM12 8h4.5A2.5 2.5 0 1 0 14 5.5Z"/></symbol>
-    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 15a4 4 0 0 1-4 4H8l-5 3 1.5-5A7 7 0 0 1 3 13V8a4 4 0 0 1 4-4h9a4 4 0 0 1 4 4Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></symbol>
-    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2.5 20h19Z"/><path d="M12 9v5M12 18h.01"/></symbol>
-    <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="m3 11 14-6v14L3 13Z"/><path d="M11 17v3a2 2 0 0 1-4 0v-5M19 9a4 4 0 0 1 0 6"/></symbol>
-    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
-    <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
-  </svg>
-  <main class="app">
-    <header class="topbar"><div class="mark"><svg class="icon"><use href="#i-diamond"/></svg></div><div class="brand"><h1>Meiliex Mini App</h1><p class="muted">ใต้โต๊ะเหมยลี่ Community</p></div><div class="sync">ข้อมูลตัวอย่าง</div></header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10M9 20v-6h6v6"/></symbol>
+  <symbol id="video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></symbol>
+  <symbol id="gift" viewBox="0 0 24 24"><path d="M3 9h18v4H3zM5 13v8h14v-8M12 9v12"/><path d="M12 9H8.5A2.5 2.5 0 1 1 11 6.5V9m1 0h3.5A2.5 2.5 0 1 0 13 6.5V9"/></symbol>
+  <symbol id="chat" viewBox="0 0 24 24"><path d="M4 5h16v12H9l-5 4z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></symbol>
+  <symbol id="alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2z"/><path d="M12 9v5m0 3h.01"/></symbol>
+  <symbol id="send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4zM22 2 11 13"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="news" viewBox="0 0 24 24"><path d="M3 11v2a2 2 0 0 0 2 2h2l4 5V4L7 9H5a2 2 0 0 0-2 2zM15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"/></symbol>
+  <symbol id="chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+</svg>
 
-    <section class="page" data-page="home">
-      <div id="hero"></div>
-      <div class="section-head"><h3><span style="color:#4bdcff">เมนูลัด</span> (Quick Menu)</h3></div>
-      <div class="quick-grid">
-        <button class="quick" data-go="live"><svg class="icon"><use href="#i-video"/></svg>ดูไลฟ์สด</button><button class="quick" data-go="events"><svg class="icon"><use href="#i-gift"/></svg>กิจกรรม</button><button class="quick" data-go="community"><svg class="icon"><use href="#i-chat"/></svg>กลุ่มพูดคุย</button><button class="quick" data-go="help"><svg class="icon"><use href="#i-alert"/></svg>แจ้งปัญหา</button>
-      </div>
-      <article class="panel feature"><svg class="icon feature-art"><use href="#i-gift"/></svg><small>กิจกรรมล่าสุด</small><h3>ติดตามกิจกรรม Community</h3><p class="muted">รับข่าวสารและรายละเอียดกิจกรรมใหม่จากทีมงาน</p><button class="primary" data-go="events">ดูรายละเอียด ›</button></article>
-      <div class="section-head" style="margin-top:18px"><h3>สถานะไลฟ์สตรีมเมอร์</h3><button class="link" data-go="live">ดูทั้งหมด ›</button></div>
-      <div class="panel stream-list" id="home-list"></div>
+<main class="app-shell">
+  <header class="brand-bar"><div class="brand-gem">◇</div><div><strong>Meiliex Mini App</strong><small>ใต้โต๊ะเหมยลี่ Community</small></div><span>● ข้อมูลตัวอย่าง</span></header>
+  <div class="page">
+    <section data-page="home">
+      <section class="hero-shell fantasy-panel"><div class="hero-track" id="hero-track"></div><div class="dots"><span class="active"></span><span></span><span></span></div></section>
+      <h2 class="section-title"><i></i>เมนูลัด <small>(Quick Menu)</small><span></span></h2>
+      <div class="quick-grid" id="quick-menu"></div>
+      <section class="activity-card fantasy-panel"><div class="quest-copy"><small>NEW COMMUNITY QUEST</small><h2>ติดตามกิจกรรม Community</h2><p>รับข่าวสารและรายละเอียดกิจกรรมใหม่จากทีมงาน</p><button class="blue-button" data-go="events">ดูรายละเอียด <svg class="icon"><use href="#chevron"/></svg></button></div><div class="quest-visual"><span class="quest-ring"></span><span class="quest-crystal crystal-one"></span><span class="quest-crystal crystal-two"></span><b><svg class="icon"><use href="#gift"/></svg></b><em>QUEST</em></div></section>
+      <h2 class="section-title"><i></i>สถานะไลฟ์สตรีมเมอร์<span></span></h2>
+      <section class="status-list fantasy-panel" id="status-list"></section>
     </section>
 
-    <section class="page" data-page="live" hidden><div class="page-title"><h2>ดูไลฟ์สด</h2><p class="muted">สถานะ Twitch ของสตรีมเมอร์ทั้งหมด</p></div><div class="cards" id="stream-cards"></div></section>
-
-    <section class="page" data-page="events" hidden><div class="page-title"><h2>กิจกรรม</h2><p class="muted">ข่าวสารและกิจกรรมล่าสุดจากทีมงาน</p></div><article class="panel activity"><div class="activity-visual"><img src="activity.png" alt="โปสเตอร์กิจกรรม" id="activity-img"><div class="placeholder" id="activity-empty" hidden><svg class="icon"><use href="#i-gift"/></svg><strong>รออัปเดตรูปกิจกรรม</strong></div></div><div class="activity-body"><h3>กิจกรรม Community ล่าสุด</h3><p class="muted">ติดตามรายละเอียด วันเวลา และประกาศสำคัญจากทีมงาน</p><button class="primary" data-go="community">ติดตามข่าวสาร ›</button></div></article></section>
-
-    <section class="page" data-page="community" hidden><div class="page-title"><h2>กลุ่มพูดคุย</h2><p class="muted">เชื่อมต่อชุมชน พูดคุย และไม่พลาดข่าวสาร</p></div>
-      <article class="panel community"><div class="community-head"><div class="community-icon"><svg class="icon"><use href="#i-megaphone"/></svg></div><div><h3>ช่องแจ้งข่าวสาร</h3><p class="muted">ติดตามข่าวสาร กิจกรรม และประกาศจากทีมงาน</p></div></div><ul class="benefits"><li>อัปเดตกิจกรรมก่อนใคร</li><li>ประกาศสำคัญ</li><li>แจ้งเตือนการไลฟ์</li></ul><button class="community-btn" data-community="channel"><svg class="icon"><use href="#i-send"/></svg>เข้าช่อง Telegram</button></article>
-      <article class="panel community"><div class="community-head"><div class="community-icon"><svg class="icon"><use href="#i-users"/></svg></div><div><h3>ใต้โต๊ะเหมยลี่</h3><p class="muted">พูดคุยกับสมาชิก สอบถามข้อมูล และร่วมกิจกรรม</p></div></div><ul class="benefits"><li>พูดคุยแลกเปลี่ยน</li><li>สอบถามข้อมูล</li><li>ร่วมสนุกกับกิจกรรม</li></ul><button class="community-btn" data-community="group"><svg class="icon"><use href="#i-send"/></svg>เข้ากลุ่ม Telegram</button></article>
+    <section data-page="live" hidden>
+      <div class="page-title"><small>STREAM PORTAL</small><h1>ดูไลฟ์สด</h1><p>เลือกแพลตฟอร์มที่ต้องการรับชม</p></div>
+      <div class="streamer-cards" id="streamer-cards"></div>
     </section>
 
-    <section class="page" data-page="help" hidden><div class="page-title"><h2>แจ้งปัญหา</h2><p class="muted">ติดต่อทีมงานเมื่อพบปัญหาการใช้งาน</p></div><article class="panel help"><div class="help-icon"><svg class="icon"><use href="#i-alert"/></svg></div><h3>ต้องการความช่วยเหลือ?</h3><p class="muted">แจ้งรายละเอียดและแนบภาพหน้าจอ เพื่อให้ทีมงานตรวจสอบได้รวดเร็วขึ้น</p><button class="community-btn" data-url="https://line.me/R/ti/p/@meichx">เปิด LINE · @meichx</button></article></section>
-  </main>
+    <section data-page="events" hidden>
+      <div class="page-title"><small>COMMUNITY QUEST</small><h1>กิจกรรมล่าสุด</h1><p>ข่าวสารและกิจกรรมสำหรับสมาชิก</p></div>
+      <article class="event-page fantasy-panel"><div class="event-art"><img id="activity-image" src="activity.png" alt="รูปกิจกรรม"><div id="activity-placeholder"><svg class="icon"><use href="#gift"/></svg></div></div><small>กิจกรรมล่าสุด</small><h2>ติดตามกิจกรรม Community</h2><p>รายละเอียดกิจกรรมใหม่จะประกาศที่นี่ พร้อมของรางวัลและกำหนดการเข้าร่วม</p><button class="blue-button">ดูรายละเอียด <svg class="icon"><use href="#chevron"/></svg></button></article>
+    </section>
 
-  <nav class="nav"><button class="active" data-go="home"><svg class="icon"><use href="#i-home"/></svg>หน้าหลัก</button><button data-go="live"><svg class="icon"><use href="#i-video"/></svg>ดูไลฟ์</button><button data-go="events"><svg class="icon"><use href="#i-gift"/></svg>กิจกรรม</button><button data-go="community"><svg class="icon"><use href="#i-chat"/></svg>กลุ่มพูดคุย</button><button data-go="help"><svg class="icon"><use href="#i-alert"/></svg>แจ้งปัญหา</button></nav>
+    <section data-page="community" hidden>
+      <div class="page-title"><small>GUILD HALL</small><h1>กลุ่มพูดคุย</h1><p>เชื่อมต่อชุมชนของเรา พูดคุย และไม่พลาดทุกข่าวสาร</p></div>
+      <article class="community-card fantasy-panel"><div class="community-head"><div class="round-icon"><svg class="icon"><use href="#news"/></svg></div><div><span>แนะนำ</span><h2>ช่องแจ้งข่าวสาร</h2><p>ติดตามข่าวสาร กิจกรรม และประกาศสำคัญจากทีมงาน</p></div></div><ul><li>✓ อัปเดตกิจกรรมก่อนใคร</li><li>✓ ประกาศสำคัญ</li><li>✓ แจ้งเตือนการไลฟ์</li></ul><button class="telegram-button" data-community="channel"><svg class="icon"><use href="#send"/></svg>เข้าร่วม Telegram</button></article>
+      <article class="community-card fantasy-panel"><div class="community-head"><div class="round-icon"><svg class="icon"><use href="#users"/></svg></div><div><span>Community หลัก</span><h2>ใต้โต๊ะเหมยลี่</h2><p>พูดคุยกับสมาชิกในกลุ่ม แชร์ประสบการณ์ และสร้างมิตรภาพ</p></div></div><ul><li>✓ พูดคุยแลกเปลี่ยน</li><li>✓ สอบถามข้อมูล</li><li>✓ ร่วมสนุกกิจกรรม</li></ul><button class="telegram-button" data-community="group"><svg class="icon"><use href="#send"/></svg>เข้าร่วม Telegram</button></article>
+    </section>
 
-  <script>
-    /* ขั้นต่อไปจะดึงชุดข้อมูลนี้จาก Cloudflare Worker + Twitch API */
-    const streamers=[
-      {name:"เหมยลี่",image:"meilie.png",heroImage:"meilie-live-banner.webp",live:true,title:"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย",twitchName:"MeiliexPim",twitch:"https://www.twitch.tv/MeiliexPim",kick:"https://kick.com/meiliebugmee"},
-      {name:"พิมมี่",image:"pimmy.png",heroImage:"pimmy-live-banner.webp",live:false,title:"ยังไม่ได้เริ่มไลฟ์",twitchName:"meichx",twitch:"https://www.twitch.tv/meichx",kick:"https://kick.com/pimmysocute"},
-      {name:"แบมบี้",image:"bamby.png",heroImage:"bamby-live-banner.webp",live:false,title:"ยังไม่ได้เริ่มไลฟ์",twitchName:"gigixbambam",twitch:"https://www.twitch.tv/gigixbambam",kick:"https://kick.com/gigixbambam"}
-    ];
-    /* ส่งลิงก์ Telegram จริงมาให้ผมใส่ใน 2 ช่องนี้ */
-    const communityLinks={channel:"",group:""};
-    const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor("#020817");tg.setBackgroundColor("#020817")}
-    function openLink(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener,noreferrer")}
-    function row(s){return `<div class="stream-row"><div class="avatar-wrap"><img class="avatar ${s.live?"live":""}" src="${s.image}" alt="${s.name}"><span class="dot ${s.live?"live":""}"></span></div><div class="stream-copy"><strong>${s.name}</strong><span>${s.live?s.title:"Twitch · "+s.twitchName}</span></div><span class="state ${s.live?"live":""}">${s.live?"● LIVE":"OFFLINE"}</span><button class="tw-mini" data-url="${s.twitch}" aria-label="เปิด Twitch">T</button></div>`}
-    function render(){const sorted=[...streamers].sort((a,b)=>Number(b.live)-Number(a.live));document.getElementById("home-list").innerHTML=sorted.map(row).join("");document.getElementById("hero").innerHTML=`<section class="panel hero-carousel"><div class="hero-track">${sorted.map(s=>`<article class="hero ${s.live?"":"empty"}"><img class="hero-img" src="${s.heroImage}" onerror="this.onerror=null;this.src='${s.image}'" alt="ภาพช่องของ ${s.name}"><div class="hero-copy"><div class="pill ${s.live?"":"offline"}"><span class="pulse"></span>${s.live?"LIVE NOW":"OFFLINE"}</div><h2>${s.name}</h2><p>${s.live?s.title:"ยังไม่ได้ไลฟ์ แวะไปติดตามช่องไว้ก่อนได้เลย"}</p><button class="primary ${s.live?"":"offline"}" data-url="${s.twitch}">${s.live?"รับชมเลย":"ไปที่ช่อง"} ›</button></div></article>`).join("")}</div><div class="hero-dots"><i></i><i></i><i></i></div></section>`;document.getElementById("stream-cards").innerHTML=sorted.map(s=>`<article class="panel stream-card"><div class="card-head"><div class="avatar-wrap"><img class="avatar ${s.live?"live":""}" src="${s.image}" alt="${s.name}"><span class="dot ${s.live?"live":""}"></span></div><div class="details"><h3>${s.name}</h3><p class="muted">${s.live?s.title:"Twitch · "+s.twitchName}</p></div><span class="state ${s.live?"live":""}">${s.live?"● LIVE":"OFFLINE"}</span></div><div class="actions"><button class="channel twitch" data-url="${s.twitch}">${s.live?"รับชม":"เปิดช่อง"} Twitch</button><button class="channel kick" data-url="${s.kick}">เปิดช่อง Kick</button></div></article>`).join("")}
-    function showPage(name){document.querySelectorAll("[data-page]").forEach(x=>x.hidden=x.dataset.page!==name);document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.go===name));document.querySelectorAll(".quick").forEach(x=>x.classList.toggle("active",x.dataset.go===name));scrollTo({top:0,behavior:"smooth"});if(tg&&tg.HapticFeedback)tg.HapticFeedback.selectionChanged()}
-    document.addEventListener("click",e=>{const go=e.target.closest("[data-go]"),url=e.target.closest("[data-url]"),community=e.target.closest("[data-community]");if(go)showPage(go.dataset.go);if(url)openLink(url.dataset.url);if(community)openLink(communityLinks[community.dataset.community])});
-    const activity=document.getElementById("activity-img"),empty=document.getElementById("activity-empty");activity.addEventListener("error",()=>{activity.hidden=true;empty.hidden=false});if(activity.complete&&!activity.naturalWidth){activity.hidden=true;empty.hidden=false}render();
-  </script>
+    <section data-page="help" hidden>
+      <div class="page-title"><small>SUPPORT CENTER</small><h1>แจ้งปัญหา</h1><p>ติดต่อทีมแอดมินเพื่อขอความช่วยเหลือ</p></div>
+      <article class="help-card fantasy-panel"><div class="round-icon"><svg class="icon"><use href="#alert"/></svg></div><h2>พบปัญหาการใช้งาน?</h2><p>แจ้งรายละเอียดกับทีมงานผ่าน LINE เราจะช่วยตรวจสอบให้เร็วที่สุด</p><a class="line-button" href="https://line.me/R/ti/p/@meichx" target="_blank"><b>LINE</b><span>ติดต่อทีมงาน</span><svg class="icon"><use href="#chevron"/></svg></a></article>
+    </section>
+  </div>
+
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+</main>
+
+<script>
+const icon=n=>`<svg class="icon"><use href="#${n}"/></svg>`;
+const streamers=[
+ {id:"meilie",name:"เหมยลี่",handle:"MeiliexPim",live:true,avatar:"meilie.png",banner:"meilie-live-banner.webp",twitch:"https://twitch.tv/MeiliexPim",kick:"https://kick.com/meiliebugmee",accent:"blue"},
+ {id:"pimmy",name:"พิมมี่",handle:"meichx",live:false,avatar:"pimmy.png",banner:"pimmy-live-banner.webp",twitch:"https://twitch.tv/meichx",kick:"https://kick.com/pimmysocute",accent:"pink"},
+ {id:"bamby",name:"แบมบี้",handle:"gigixbambam",live:false,avatar:"bamby.png",banner:"bamby-live-banner.webp",twitch:"https://twitch.tv/gigixbambam",kick:"https://kick.com/gigixbambam",accent:"red"}
+];
+const nav=[["home","หน้าหลัก","home"],["live","ดูไลฟ์","video"],["events","กิจกรรม","gift"],["community","กลุ่มพูดคุย","chat"],["help","แจ้งปัญหา","alert"]];
+const communityLinks={channel:"",group:""};
+const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor("#071343");tg.setBackgroundColor("#02051b")}
+function openURL(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener")}
+function render(){
+ document.querySelector("#hero-track").innerHTML=streamers.map(s=>`<article class="hero ${s.accent}" style="background-image:url('${s.banner}')"><div class="hero-shade"></div><div class="hero-content"><span class="live-pill ${s.live?"on":"off"}">${s.live?"● LIVE NOW":"OFFLINE"}</span><h1>${s.name}</h1><p>${s.live?"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย":"ยังไม่ได้ไลฟ์ แวะไปติดตามช่องไว้ก่อนได้เลย"}</p><a class="hero-button ${s.live?"watch":"channel"}" href="${s.twitch}" target="_blank">${s.live?"รับชมเลย":"ไปที่ช่อง"} ${icon("chevron")}</a></div></article>`).join("");
+ document.querySelector("#quick-menu").innerHTML=nav.slice(1).map((n,i)=>`<button class="skill-button c${i}" data-go="${n[0]}"><b>${icon(n[2])}</b><span>${n[1]}</span></button>`).join("");
+ document.querySelector("#status-list").innerHTML=streamers.map(s=>`<div class="status-row"><i class="energy ${s.live?"on":""}"></i><div class="avatar-frame"><img src="${s.avatar}" alt="${s.name}"></div><div class="status-copy"><strong>${s.name}</strong><small>${s.live?"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย":"Twitch · "+s.handle}</small></div><span class="status-badge ${s.live?"on":""}">${s.live?"● LIVE":"OFFLINE"}</span><a class="twitch-mini" href="${s.twitch}" target="_blank">T</a></div>`).join("");
+ document.querySelector("#streamer-cards").innerHTML=streamers.map(s=>`<article class="streamer-card fantasy-panel"><div class="stream-head"><div class="avatar-frame large"><img src="${s.avatar}" alt="${s.name}"></div><div><h2>${s.name}</h2><span class="status-badge ${s.live?"on":""}">${s.live?"● กำลังไลฟ์":"OFFLINE"}</span></div></div><div class="channel-grid"><a class="twitch" href="${s.twitch}" target="_blank">Twitch ${icon("chevron")}</a><a class="kick" href="${s.kick}" target="_blank">Kick ${icon("chevron")}</a></div></article>`).join("");
+ document.querySelector("#bottom-nav").innerHTML=nav.map(n=>`<button class="${n[0]==="home"?"active":""}" data-go="${n[0]}">${icon(n[2])}<span>${n[1]}</span></button>`).join("");
+}
+function showPage(id){document.querySelectorAll("[data-page]").forEach(x=>x.hidden=x.dataset.page!==id);document.querySelectorAll("#bottom-nav button").forEach(x=>x.classList.toggle("active",x.dataset.go===id));window.scrollTo({top:0,behavior:"smooth"})}
+document.addEventListener("click",e=>{const go=e.target.closest("[data-go]"),community=e.target.closest("[data-community]");if(go)showPage(go.dataset.go);if(community)openURL(communityLinks[community.dataset.community])});
+const track=document.querySelector("#hero-track");track.addEventListener("scroll",()=>{const i=Math.round(track.scrollLeft/track.clientWidth);document.querySelectorAll(".dots span").forEach((x,n)=>x.classList.toggle("active",n===i))});
+const activity=document.querySelector("#activity-image"),placeholder=document.querySelector("#activity-placeholder");activity.addEventListener("error",()=>{activity.hidden=true;placeholder.hidden=false});placeholder.hidden=true;
+render();
+</script>
 </body>
 </html>
