@@ -2,524 +2,80 @@
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1020">
-  <title>ใต้โต๊ะเหมยลี่</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#020817">
+  <title>Meiliex Mini App</title>
   <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: var(--tg-theme-bg-color, #090e1c);
-      --panel: var(--tg-theme-secondary-bg-color, #151c30);
-      --text: var(--tg-theme-text-color, #f8fafc);
-      --muted: var(--tg-theme-hint-color, #a8b3ca);
-      --line: rgba(148, 163, 184, .18);
-      --primary: var(--tg-theme-button-color, #5b7cff);
-      --primary-text: var(--tg-theme-button-text-color, #ffffff);
-      --live: #ff365f;
-      --offline: #8994aa;
-      --twitch: #9146ff;
-      --kick: #53fc18;
-      --line-app: #06c755;
-    }
-
-    * { box-sizing: border-box; }
-    [hidden] { display: none !important; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: max(18px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
-      background:
-        radial-gradient(circle at 12% 5%, rgba(91, 124, 255, .24), transparent 32%),
-        radial-gradient(circle at 92% 20%, rgba(139, 92, 246, .16), transparent 30%),
-        var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    main { width: min(100%, 540px); margin: 0 auto; }
-    h1, h2, h3, p { margin: 0; }
-    h1 { font-size: 20px; }
-    h2 { font-size: 18px; }
-    h3 { font-size: 16px; }
-    .muted { color: var(--muted); font-size: 13px; }
-
-    .header, .page-head, .row, .stream-head, .schedule-row {
-      display: flex;
-      align-items: center;
-    }
-
-    .header {
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .logo {
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #5b8cff, #8b5cf6);
-      box-shadow: 0 12px 30px rgba(79, 124, 255, .28);
-      font-size: 23px;
-    }
-
-    .card {
-      margin-bottom: 14px;
-      padding: 16px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: color-mix(in srgb, var(--panel) 93%, transparent);
-      box-shadow: 0 14px 35px rgba(0, 0, 0, .18);
-    }
-
-    .page-head {
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .back {
-      min-height: 38px;
-      padding: 8px 12px;
-      color: var(--text);
-      background: rgba(148, 163, 184, .12);
-    }
-
-    .now-live {
-      border-color: rgba(255, 54, 95, .38);
-      background:
-        linear-gradient(135deg, rgba(255, 54, 95, .12), transparent 60%),
-        color-mix(in srgb, var(--panel) 93%, transparent);
-    }
-
-    .row, .stream-head, .schedule-row {
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .identity {
-      display: flex;
-      align-items: center;
-      min-width: 0;
-      gap: 10px;
-    }
-
-    .profile-image {
-      width: 54px;
-      height: 54px;
-      display: block;
-      flex: 0 0 auto;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: center;
-      background: #ffffff;
-      border: 2px solid rgba(148, 163, 184, .35);
-    }
-
-    .profile-image.live {
-      border-color: var(--live);
-      box-shadow: 0 0 0 4px rgba(255, 54, 95, .12), 0 0 18px rgba(255, 54, 95, .45);
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      display: inline-block;
-      margin-right: 6px;
-      border-radius: 50%;
-      background: var(--offline);
-    }
-
-    .dot.live {
-      background: var(--live);
-      box-shadow: 0 0 0 5px rgba(255, 54, 95, .12), 0 0 16px rgba(255, 54, 95, .65);
-    }
-
-    .badge {
-      padding: 5px 9px;
-      flex: 0 0 auto;
-      border-radius: 999px;
-      background: rgba(148, 163, 184, .13);
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .badge.live {
-      background: rgba(255, 54, 95, .14);
-      color: #ff86a0;
-    }
-
-    .quick-watch {
-      width: 100%;
-      margin-top: 13px;
-      background: linear-gradient(135deg, #ff365f, #d81b60);
-    }
-
-    .menu-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    button, .button {
-      min-height: 48px;
-      border: 0;
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: var(--primary-text);
-      background: var(--primary);
-      font: inherit;
-      font-weight: 800;
-      text-align: center;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    button:active, .button:active { transform: scale(.98); }
-
-    .menu-button {
-      min-height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--text);
-      background: color-mix(in srgb, var(--panel) 95%, transparent);
-      border: 1px solid var(--line);
-      text-align: left;
-    }
-
-    .menu-main {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .menu-icon {
-      width: 44px;
-      height: 44px;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      border-radius: 14px;
-      background: rgba(91, 124, 255, .16);
-      font-size: 23px;
-    }
-
-    .menu-copy { display: grid; gap: 3px; }
-    .menu-copy strong { font-size: 15px; }
-    .menu-copy span { color: var(--muted); font-size: 12px; font-weight: 500; }
-    .chevron { color: var(--muted); font-size: 22px; }
-
-    .streamer {
-      padding: 15px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .streamer:first-child { padding-top: 0; border-top: 0; }
-    .streamer:last-child { padding-bottom: 0; }
-
-    .channel-buttons {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 9px;
-      margin-top: 12px;
-    }
-
-    .channel-buttons.single { grid-template-columns: 1fr; }
-    .twitch { background: linear-gradient(135deg, var(--twitch), #6b21d7); }
-    .kick { color: var(--kick); background: #1b2b18; border: 1px solid rgba(83, 252, 24, .45); }
-    .disabled { color: var(--muted); background: rgba(148, 163, 184, .1); cursor: not-allowed; }
-
-    .event-block, .schedule-list { display: grid; gap: 10px; }
-
-    .event-block {
-      padding: 14px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .event-block:first-child { padding-top: 0; border-top: 0; }
-    .event-block:last-child { padding-bottom: 0; }
-
-    .schedule-row {
-      padding: 12px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .schedule-row:first-child { padding-top: 0; border-top: 0; }
-    .schedule-row:last-child { padding-bottom: 0; }
-    .schedule-row strong { text-align: right; font-size: 14px; }
-
-    .line-button {
-      width: 100%;
-      display: block;
-      margin-top: 14px;
-      background: var(--line-app);
-    }
-
-    .activity-frame {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      overflow: hidden;
-      margin-bottom: 14px;
-      border-radius: 16px;
-      background: rgba(148, 163, 184, .1);
-      border: 1px solid var(--line);
-    }
-
-    .activity-frame img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-    }
-
-    .activity-placeholder {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .footer {
-      padding-top: 4px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    @media (max-width: 370px) {
-      .channel-buttons { grid-template-columns: 1fr; }
-      .schedule-row { align-items: flex-start; flex-direction: column; }
-      .schedule-row strong { text-align: left; }
-    }
+    :root{color-scheme:dark;--bg:#020817;--card:#06152f;--card2:#071d40;--text:#f5f9ff;--muted:#9eb3d0;--blue:#168bff;--cyan:#00d9ff;--live:#ff344d;--twitch:#9146ff;--line:rgba(57,151,255,.38)}
+    *{box-sizing:border-box} [hidden]{display:none!important} html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 10% 0,rgba(0,132,255,.25),transparent 30%),radial-gradient(circle at 100% 35%,rgba(0,217,255,.13),transparent 28%),linear-gradient(#020817,#03132e 55%,#020817);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:linear-gradient(rgba(71,151,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(71,151,255,.14) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(#000,transparent 80%)}
+    button{font:inherit}.app{position:relative;width:min(100%,540px);min-height:100vh;margin:auto;padding:max(15px,env(safe-area-inset-top)) 14px calc(94px + env(safe-area-inset-bottom))}h1,h2,h3,p{margin:0}.muted{color:var(--muted)}
+    .topbar{display:flex;align-items:center;gap:10px;min-height:52px;margin-bottom:14px}.mark{width:44px;height:44px;display:grid;place-items:center;flex:none;border:1px solid #55baff;border-radius:14px;background:linear-gradient(145deg,#1456d6,#08c9ff);box-shadow:0 0 22px rgba(0,163,255,.35);font-size:22px}.brand h1{font-size:17px}.brand p{margin-top:2px;font-size:11px}.sync{margin-left:auto;color:#6ce8ff;font-size:10px;white-space:nowrap}.sync:before{content:"";display:inline-block;width:7px;height:7px;margin-right:5px;border-radius:50%;background:#39e8b0;box-shadow:0 0 9px #39e8b0}
+    .page{animation:enter .24s ease}@keyframes enter{from{opacity:0;transform:translateY(7px)}}.page-title{margin:5px 2px 14px}.page-title h2{font-size:22px}.page-title p{margin-top:4px;font-size:12px}
+    .panel{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(7,29,64,.97),rgba(3,13,34,.98));box-shadow:0 15px 36px rgba(0,0,0,.27),inset 0 1px rgba(255,255,255,.04)}
+    .hero{min-height:226px;display:flex;align-items:flex-end;margin-bottom:16px;padding:17px;isolation:isolate}.hero:before{content:"";position:absolute;inset:0;z-index:-3;background:radial-gradient(circle at 77% 38%,rgba(28,127,255,.42),transparent 32%),linear-gradient(100deg,#071a38,rgba(3,12,32,.12))}.hero:after{content:"";position:absolute;z-index:-1;inset:auto 0 0;height:66%;background:linear-gradient(transparent,rgba(1,7,22,.96))}.hero-img{position:absolute;z-index:-2;right:-8px;bottom:0;width:61%;height:95%;object-fit:contain;object-position:right bottom;filter:drop-shadow(0 0 18px rgba(38,126,255,.4))}.hero-copy{width:65%}.pill{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:5px 9px;margin-bottom:10px;border:1px solid rgba(255,52,77,.7);border-radius:99px;background:rgba(255,52,77,.13);color:#ff5d70;font-size:11px;font-weight:900}.pulse{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1.7s infinite}@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(255,52,77,0)}}.hero h2{font-size:clamp(25px,8vw,32px)}.hero p{margin-top:5px;color:#c7d9f1;font-size:12px;line-height:1.5}
+    .primary{min-height:45px;display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:13px;padding:10px 18px;border:1px solid #38bdff;border-radius:12px;color:#fff;background:linear-gradient(135deg,#0aa4ff,#1555e6);box-shadow:0 8px 20px rgba(12,113,255,.34);font-weight:800;cursor:pointer}.primary:active,.quick:active,.channel:active,.community-btn:active{transform:scale(.98)}
+    .section-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 9px}.section-head h3{font-size:15px}.link{border:0;padding:5px;color:#76dfff;background:none;font-size:11px;cursor:pointer}
+    .stream-list{margin-bottom:16px;padding:3px 14px}.stream-row{min-height:66px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(117,171,238,.15)}.stream-row:last-child{border:0}.avatar-wrap{position:relative;flex:none}.avatar{width:44px;height:44px;display:block;object-fit:cover;border:1px solid rgba(105,174,255,.5);border-radius:50%;background:#fff}.avatar.live{border:2px solid var(--live);box-shadow:0 0 13px rgba(255,52,77,.5)}.dot{position:absolute;right:0;bottom:1px;width:10px;height:10px;border:2px solid var(--card);border-radius:50%;background:#6c7d97}.dot.live{background:var(--live)}.stream-copy{min-width:0;flex:1}.stream-copy strong{display:block;font-size:14px}.stream-copy span{display:block;margin-top:2px;overflow:hidden;color:var(--muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}.state{padding:4px 8px;border-radius:99px;background:#152541;color:#c0cee0;font-size:9px;font-weight:900}.state.live{background:linear-gradient(135deg,#ff263f,#e24277);color:#fff}.tw-mini{width:31px;height:31px;border:0;border-radius:9px;color:#fff;background:var(--twitch);font-weight:900;cursor:pointer}
+    .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}.quick{min-height:91px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px 3px;border:1px solid rgba(36,139,255,.72);border-radius:13px;color:#eaf5ff;background:linear-gradient(160deg,rgba(7,44,91,.92),rgba(3,15,39,.98));font-size:11px;cursor:pointer}.quick.active{border-color:#ffd65c;box-shadow:0 0 14px rgba(255,208,67,.28)}.quick i{color:#5bd0ff;font-size:24px;font-style:normal;filter:drop-shadow(0 0 8px rgba(0,174,255,.7))}
+    .feature{min-height:165px;padding:18px}.feature:after{content:"🎁";position:absolute;right:20px;bottom:18px;font-size:60px;filter:drop-shadow(0 0 18px rgba(0,153,255,.55));transform:rotate(-7deg)}.feature small{color:#7de4ff}.feature h3{width:68%;margin-top:6px;font-size:21px}.feature p{width:68%;margin-top:6px;font-size:12px;line-height:1.5}
+    .cards{display:grid;gap:12px}.stream-card{padding:15px}.card-head{display:flex;align-items:center;gap:12px}.card-head .avatar{width:58px;height:58px}.details{min-width:0;flex:1}.details h3{font-size:17px}.details p{margin-top:4px;font-size:11px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.actions.single{grid-template-columns:1fr}.channel{min-height:44px;border:0;border-radius:11px;color:#fff;font-weight:800;cursor:pointer}.twitch{background:linear-gradient(135deg,#a05cff,#6126cb)}.kick{border:1px solid rgba(83,252,24,.6);color:#53fc18;background:#10250d}
+    .activity{margin-bottom:12px}.activity-visual{aspect-ratio:1;display:grid;place-items:center;overflow:hidden;background:radial-gradient(circle at 70% 30%,rgba(0,217,255,.28),transparent 35%),radial-gradient(circle at 20% 78%,rgba(87,64,255,.32),transparent 32%),linear-gradient(145deg,#06204c,#040b20)}.activity-visual img{width:100%;height:100%;object-fit:cover}.placeholder{text-align:center}.placeholder span{display:block;font-size:70px}.activity-body{padding:16px}.activity-body h3{font-size:19px}.activity-body p{margin-top:7px;font-size:12px;line-height:1.6}
+    .community{margin-bottom:13px;padding:17px;border-color:rgba(0,206,255,.55)}.community-head{display:flex;align-items:center;gap:13px}.community-icon{width:62px;height:62px;display:grid;place-items:center;flex:none;border:1px solid #42d7ff;border-radius:50%;background:radial-gradient(circle,rgba(28,166,255,.45),rgba(4,17,45,.9));box-shadow:0 0 18px rgba(0,191,255,.42);font-size:29px}.community h3{font-size:17px}.community-head p{margin-top:4px;font-size:11px;line-height:1.5}.benefits{display:grid;gap:7px;margin:14px 0;padding:0;list-style:none}.benefits li{color:#c2d2e8;font-size:12px}.benefits li:before{content:"✓";margin-right:8px;color:#19baff;font-weight:900}.community-btn{width:100%;min-height:49px;border:1px solid #41d9ff;border-radius:13px;color:#fff;background:linear-gradient(135deg,#0899dd,#1760ee);font-weight:800;cursor:pointer}
+    .help{padding:22px 17px;text-align:center}.help-icon{width:72px;height:72px;display:grid;place-items:center;margin:0 auto 13px;border:1px solid #32ccff;border-radius:22px;background:rgba(5,120,255,.15);box-shadow:0 0 20px rgba(0,169,255,.25);font-size:35px}.help h3{font-size:20px}.help p{max-width:340px;margin:7px auto 14px;font-size:12px;line-height:1.6}
+    .nav{position:fixed;z-index:20;left:50%;bottom:0;width:min(100%,540px);min-height:calc(78px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);padding:6px 7px calc(6px + env(safe-area-inset-bottom));border-top:1px solid rgba(49,134,245,.48);background:rgba(2,10,27,.94);box-shadow:0 -12px 28px rgba(0,0,0,.35);backdrop-filter:blur(16px);transform:translateX(-50%)}.nav button{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;border-radius:12px;color:#8093b0;background:none;font-size:9px;cursor:pointer}.nav button.active{color:#55dfff;background:rgba(0,132,255,.13)}.nav i{font-size:21px;font-style:normal;line-height:1}
+    .empty .hero-img{opacity:.43;filter:grayscale(.2)}.empty .pill{border-color:#7185a3;color:#b3c3d8;background:rgba(113,133,163,.12)}.empty .pulse{animation:none}
+    @media(max-width:375px){.app{padding-inline:11px}.sync{display:none}.quick-grid{gap:6px}.quick{min-height:84px;font-size:9px}.hero-copy{width:70%}.hero-img{width:57%;opacity:.84}.actions{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
   </style>
 </head>
 <body>
-  <main>
-    <header class="header">
-      <div class="logo" aria-hidden="true">✨</div>
-      <div>
-        <h1>ใต้โต๊ะเหมยลี่</h1>
-        <p class="muted">ศูนย์รวมไลฟ์และกิจกรรมล่าสุด</p>
-      </div>
-    </header>
+  <main class="app">
+    <header class="topbar"><div class="mark">◆</div><div class="brand"><h1>Meiliex Mini App</h1><p class="muted">ใต้โต๊ะเหมยลี่ Community</p></div><div class="sync">ข้อมูลตัวอย่าง</div></header>
 
-    <section data-page="home">
-      <div class="card now-live">
-        <div class="page-head">
-          <div>
-            <h2>🔴 ใครไลฟ์อยู่ตอนนี้</h2>
-            <p class="muted">กดรับชมได้ทันที</p>
-          </div>
-          <span class="badge live" id="live-count">LIVE</span>
-        </div>
-        <div id="current-live"></div>
+    <section class="page" data-page="home">
+      <div id="hero"></div>
+      <div class="section-head"><h3>สถานะไลฟ์สตรีมเมอร์</h3><button class="link" data-go="live">ดูทั้งหมด ›</button></div>
+      <div class="panel stream-list" id="home-list"></div>
+      <div class="section-head"><h3><span style="color:#4bdcff">เมนูลัด</span> (Quick Menu)</h3></div>
+      <div class="quick-grid">
+        <button class="quick" data-go="live"><i>▣</i>ดูไลฟ์สด</button><button class="quick" data-go="events"><i>🎁</i>กิจกรรม</button><button class="quick" data-go="community"><i>💬</i>กลุ่มพูดคุย</button><button class="quick" data-go="help"><i>⚠</i>แจ้งปัญหา</button>
       </div>
-
-      <div class="menu-grid" aria-label="หมวดหมู่หลัก">
-        <button class="menu-button" type="button" data-go="live">
-          <span class="menu-main"><span class="menu-icon">📺</span><span class="menu-copy"><strong>ดูไลฟ์สด</strong><span>เช็กสถานะและเลือกช่องทางรับชม</span></span></span><span class="chevron">›</span>
-        </button>
-        <button class="menu-button" type="button" data-go="events">
-          <span class="menu-main"><span class="menu-icon">🎁</span><span class="menu-copy"><strong>กิจกรรม</strong><span>ดูโปสเตอร์และรายละเอียดล่าสุด</span></span></span><span class="chevron">›</span>
-        </button>
-        <button class="menu-button" type="button" data-go="schedule">
-          <span class="menu-main"><span class="menu-icon">📅</span><span class="menu-copy"><strong>ตารางไลฟ์</strong><span>ตรวจสอบวันไลฟ์ของทีมงาน</span></span></span><span class="chevron">›</span>
-        </button>
-        <button class="menu-button" type="button" data-go="help">
-          <span class="menu-main"><span class="menu-icon">💬</span><span class="menu-copy"><strong>แจ้งปัญหา</strong><span>ติดต่อทีมแอดมินผ่าน LINE</span></span></span><span class="chevron">›</span>
-        </button>
-      </div>
+      <article class="panel feature"><small>กิจกรรมล่าสุด</small><h3>ติดตามกิจกรรม Community</h3><p class="muted">รับข่าวสารและรายละเอียดกิจกรรมใหม่จากทีมงาน</p><button class="primary" data-go="events">ดูรายละเอียด ›</button></article>
     </section>
 
-    <section data-page="live" hidden>
-      <div class="page-head">
-        <button class="back" type="button" data-go="home">← กลับ</button>
-        <h2>สถานะไลฟ์สตรีมเมอร์</h2>
-      </div>
-      <div class="card" id="streamer-list"></div>
+    <section class="page" data-page="live" hidden><div class="page-title"><h2>ดูไลฟ์สด</h2><p class="muted">สถานะ Twitch ของสตรีมเมอร์ทั้งหมด</p></div><div class="cards" id="stream-cards"></div></section>
+
+    <section class="page" data-page="events" hidden><div class="page-title"><h2>กิจกรรม</h2><p class="muted">ข่าวสารและกิจกรรมล่าสุดจากทีมงาน</p></div><article class="panel activity"><div class="activity-visual"><img src="activity.png" alt="โปสเตอร์กิจกรรม" id="activity-img"><div class="placeholder" id="activity-empty" hidden><span>🎁</span><strong>รออัปเดตรูปกิจกรรม</strong></div></div><div class="activity-body"><h3>กิจกรรม Community ล่าสุด</h3><p class="muted">ติดตามรายละเอียด วันเวลา และประกาศสำคัญจากทีมงาน</p><button class="primary" data-go="community">ติดตามข่าวสาร ›</button></div></article></section>
+
+    <section class="page" data-page="community" hidden><div class="page-title"><h2>กลุ่มพูดคุย</h2><p class="muted">เชื่อมต่อชุมชน พูดคุย และไม่พลาดข่าวสาร</p></div>
+      <article class="panel community"><div class="community-head"><div class="community-icon">📣</div><div><h3>ช่องแจ้งข่าวสาร</h3><p class="muted">ติดตามข่าวสาร กิจกรรม และประกาศจากทีมงาน</p></div></div><ul class="benefits"><li>อัปเดตกิจกรรมก่อนใคร</li><li>ประกาศสำคัญ</li><li>แจ้งเตือนการไลฟ์</li></ul><button class="community-btn" data-community="channel">✈ เข้าช่อง Telegram</button></article>
+      <article class="panel community"><div class="community-head"><div class="community-icon">👥</div><div><h3>ใต้โต๊ะเหมยลี่</h3><p class="muted">พูดคุยกับสมาชิก สอบถามข้อมูล และร่วมกิจกรรม</p></div></div><ul class="benefits"><li>พูดคุยแลกเปลี่ยน</li><li>สอบถามข้อมูล</li><li>ร่วมสนุกกับกิจกรรม</li></ul><button class="community-btn" data-community="group">✈ เข้ากลุ่ม Telegram</button></article>
     </section>
 
-    <section data-page="events" hidden>
-      <div class="page-head">
-        <button class="back" type="button" data-go="home">← กลับ</button>
-        <h2>กิจกรรมล่าสุด</h2>
-      </div>
-      <div class="card">
-        <div class="activity-frame">
-          <img id="activity-image" src="activity.png" alt="โปสเตอร์กิจกรรมล่าสุด">
-          <div class="activity-placeholder" id="activity-placeholder" hidden>ยังไม่มีรูปกิจกรรม<br>อัปโหลดรูปชื่อ activity.png ขนาด 1:1</div>
-        </div>
-        <div class="event-block">
-          <h3>🎁 กิจกรรมพิเศษ 2 ต่อ</h3>
-          <p><strong>ต่อที่ 1:</strong> เหมาแจกฟรีเกม 375 บาท จำนวน 10 คน</p>
-          <p class="muted">แตกเท่าไหร่เอาไปเลย! ไม่แตกการันตี 100 บาท</p>
-        </div>
-        <div class="event-block">
-          <p><strong>ต่อที่ 2:</strong> ทุกการแตก 20,000 แจก 100 บาท</p>
-          <p class="muted">ไม่จำกัดจำนวน</p>
-        </div>
-      </div>
-    </section>
-
-    <section data-page="schedule" hidden>
-      <div class="page-head">
-        <button class="back" type="button" data-go="home">← กลับ</button>
-        <h2>ตารางไลฟ์</h2>
-      </div>
-      <div class="card schedule-list">
-        <div class="schedule-row"><span>เหมยลี่</span><strong>อังคาร–เสาร์ · เวลาแจ้งในกลุ่ม</strong></div>
-        <div class="schedule-row"><span>พิมมี่</span><strong>เสาร์–อาทิตย์ · เวลาแจ้งในกลุ่ม</strong></div>
-        <div class="schedule-row"><span>แบมบี้</span><strong>ทุกวัน · เวลาแจ้งในกลุ่ม</strong></div>
-      </div>
-    </section>
-
-    <section data-page="help" hidden>
-      <div class="page-head">
-        <button class="back" type="button" data-go="home">← กลับ</button>
-        <h2>แจ้งปัญหา</h2>
-      </div>
-      <div class="card">
-        <h3>ติดต่อทีมแอดมินผ่าน LINE</h3>
-        <p class="muted" style="margin-top:7px">แจ้งรายละเอียดปัญหา พร้อมแนบภาพหน้าจอเพื่อให้ตรวจสอบได้เร็วขึ้น</p>
-        <button class="line-button" type="button" data-url="https://line.me/R/ti/p/@meichx">เปิด LINE · @meichx</button>
-      </div>
-    </section>
-
-    <p class="footer">MeiliexBot · Telegram Mini App</p>
+    <section class="page" data-page="help" hidden><div class="page-title"><h2>แจ้งปัญหา</h2><p class="muted">ติดต่อทีมงานเมื่อพบปัญหาการใช้งาน</p></div><article class="panel help"><div class="help-icon">⚠</div><h3>ต้องการความช่วยเหลือ?</h3><p class="muted">แจ้งรายละเอียดและแนบภาพหน้าจอ เพื่อให้ทีมงานตรวจสอบได้รวดเร็วขึ้น</p><button class="community-btn" data-url="https://line.me/R/ti/p/@meichx">เปิด LINE · @meichx</button></article></section>
   </main>
 
+  <nav class="nav"><button class="active" data-go="home"><i>⌂</i>หน้าหลัก</button><button data-go="live"><i>▣</i>ดูไลฟ์</button><button data-go="events"><i>♙</i>กิจกรรม</button><button data-go="community"><i>💬</i>กลุ่มพูดคุย</button><button data-go="help"><i>⚠</i>แจ้งปัญหา</button></nav>
+
   <script>
-    /* แก้สถานะตรง live: true หรือ false แล้ว Commit ใน GitHub */
-    const streamers = [
-      {
-        name: "เหมยลี่",
-        image: "meilie.png",
-        live: true,
-        twitch: "https://www.twitch.tv/MeiliexPim",
-        twitchName: "MeiliexPim",
-        kick: "https://kick.com/meiliebugmee",
-        kickName: "meiliebugmee"
-      },
-      {
-        name: "พิมมี่",
-        image: "pimmy.png",
-        live: false,
-        twitch: "https://www.twitch.tv/meichx",
-        twitchName: "meichx",
-        kick: "",
-        kickName: "ยังไม่ได้ใส่ลิงก์"
-      },
-      {
-        name: "แบมบี้",
-        image: "bamby.png",
-        live: false,
-        twitch: "https://www.twitch.tv/gigixbambam",
-        twitchName: "gigixbambam",
-        kick: "",
-        kickName: "ยังไม่ได้ใส่ลิงก์"
-      }
+    /* ขั้นต่อไปจะดึงชุดข้อมูลนี้จาก Cloudflare Worker + Twitch API */
+    const streamers=[
+      {name:"เหมยลี่",image:"meilie.png",live:true,title:"กำลังไลฟ์สด! มาให้กำลังใจกันได้เลย",twitchName:"MeiliexPim",twitch:"https://www.twitch.tv/MeiliexPim",kick:"https://kick.com/meiliebugmee"},
+      {name:"พิมมี่",image:"pimmy.png",live:false,title:"ยังไม่ได้เริ่มไลฟ์",twitchName:"meichx",twitch:"https://www.twitch.tv/meichx",kick:""},
+      {name:"แบมบี้",image:"bamby.png",live:false,title:"ยังไม่ได้เริ่มไลฟ์",twitchName:"gigixbambam",twitch:"https://www.twitch.tv/gigixbambam",kick:""}
     ];
-
-    const telegramApp = window.Telegram && window.Telegram.WebApp;
-    if (telegramApp) {
-      telegramApp.ready();
-      telegramApp.expand();
-    }
-
-    function openExternal(url) {
-      if (!url) return;
-      if (telegramApp) telegramApp.openLink(url);
-      else window.location.href = url;
-    }
-
-    function channelButtons(streamer) {
-      const twitchButton = '<button class="twitch" type="button" data-url="' + streamer.twitch + '">🎮 Twitch · ' + streamer.twitchName + '</button>';
-      const kickButton = streamer.kick
-        ? '<button class="kick" type="button" data-url="' + streamer.kick + '">▶ Kick · ' + streamer.kickName + '</button>'
-        : '<button class="disabled" type="button" disabled>▶ Kick · ยังไม่ได้ใส่ลิงก์</button>';
-      return '<div class="channel-buttons">' + twitchButton + kickButton + '</div>';
-    }
-
-    function renderCurrentLive() {
-      const liveStreamers = streamers.filter(function (streamer) { return streamer.live; });
-      const container = document.getElementById("current-live");
-      const count = document.getElementById("live-count");
-      if (liveStreamers.length === 0) {
-        count.textContent = "OFFLINE";
-        count.classList.remove("live");
-        container.innerHTML = '<p class="muted">ตอนนี้ยังไม่มีสตรีมเมอร์กำลังไลฟ์</p>';
-        return;
-      }
-      count.textContent = liveStreamers.length + " LIVE";
-      container.innerHTML = liveStreamers.map(function (streamer) {
-        return '<div class="streamer">' +
-          '<div class="stream-head"><div class="identity"><img class="profile-image live" src="' + streamer.image + '" alt="รูปโปรไฟล์ ' + streamer.name + '">' +
-          '<div><strong><span class="dot live"></span>' + streamer.name + ' กำลังไลฟ์</strong><p class="muted">Twitch · ' + streamer.twitchName + '</p></div></div></div>' +
-          '<button class="quick-watch" type="button" data-url="' + streamer.twitch + '">รับชม</button>' +
-          '</div>';
-      }).join("");
-    }
-
-    function renderStreamerList() {
-      document.getElementById("streamer-list").innerHTML = streamers.map(function (streamer) {
-        const stateText = streamer.live ? "กำลัง LIVE" : "ยังไม่ได้เริ่มไลฟ์";
-        const stateClass = streamer.live ? "live" : "";
-        return '<div class="streamer">' +
-          '<div class="stream-head"><div class="identity"><img class="profile-image ' + stateClass + '" src="' + streamer.image + '" alt="รูปโปรไฟล์ ' + streamer.name + '">' +
-          '<div><h3>' + streamer.name + '</h3><p class="muted"><span class="dot ' + stateClass + '"></span>' + stateText + '</p></div></div>' +
-          '<span class="badge ' + stateClass + '">' + (streamer.live ? "LIVE" : "OFFLINE") + '</span></div>' +
-          channelButtons(streamer) + '</div>';
-      }).join("");
-    }
-
-    function bindExternalButtons() {
-      document.querySelectorAll("[data-url]").forEach(function (button) {
-        if (button.dataset.bound === "true") return;
-        button.dataset.bound = "true";
-        button.addEventListener("click", function () {
-          openExternal(button.getAttribute("data-url"));
-        });
-      });
-    }
-
-    function showPage(pageName) {
-      document.querySelectorAll("[data-page]").forEach(function (page) {
-        page.hidden = page.getAttribute("data-page") !== pageName;
-      });
-      window.scrollTo(0, 0);
-    }
-
-    document.querySelectorAll("[data-go]").forEach(function (button) {
-      button.addEventListener("click", function () {
-        showPage(button.getAttribute("data-go"));
-      });
-    });
-
-    renderCurrentLive();
-    renderStreamerList();
-    bindExternalButtons();
-
-    const activityImage = document.getElementById("activity-image");
-    const activityPlaceholder = document.getElementById("activity-placeholder");
-    activityImage.addEventListener("error", function () {
-      activityImage.hidden = true;
-      activityPlaceholder.hidden = false;
-    });
-    if (activityImage.complete && activityImage.naturalWidth === 0) {
-      activityImage.hidden = true;
-      activityPlaceholder.hidden = false;
-    }
+    /* ส่งลิงก์ Telegram จริงมาให้ผมใส่ใน 2 ช่องนี้ */
+    const communityLinks={channel:"",group:""};
+    const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor("#020817");tg.setBackgroundColor("#020817")}
+    function openLink(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener,noreferrer")}
+    function row(s){return `<div class="stream-row"><div class="avatar-wrap"><img class="avatar ${s.live?"live":""}" src="${s.image}" alt="${s.name}"><span class="dot ${s.live?"live":""}"></span></div><div class="stream-copy"><strong>${s.name}</strong><span>${s.live?s.title:"Twitch · "+s.twitchName}</span></div><span class="state ${s.live?"live":""}">${s.live?"● LIVE":"OFFLINE"}</span><button class="tw-mini" data-url="${s.twitch}" aria-label="เปิด Twitch">T</button></div>`}
+    function render(){const sorted=[...streamers].sort((a,b)=>Number(b.live)-Number(a.live)),live=sorted.find(s=>s.live);document.getElementById("home-list").innerHTML=sorted.map(row).join("");document.getElementById("hero").innerHTML=live?`<article class="panel hero"><img class="hero-img" src="${live.image}" alt="${live.name}"><div class="hero-copy"><div class="pill"><span class="pulse"></span>LIVE NOW</div><h2>${live.name}</h2><p>${live.title}</p><button class="primary" data-url="${live.twitch}">รับชมเลย ›</button></div></article>`:`<article class="panel hero empty"><img class="hero-img" src="meilie.png" alt=""><div class="hero-copy"><div class="pill"><span class="pulse"></span>OFFLINE</div><h2>ยังไม่มีใครไลฟ์</h2><p>เยี่ยมชมช่อง Twitch หรือ Community ได้จากเมนูด้านล่าง</p><button class="primary" data-go="live">ดูช่องทั้งหมด ›</button></div></article>`;document.getElementById("stream-cards").innerHTML=sorted.map(s=>`<article class="panel stream-card"><div class="card-head"><div class="avatar-wrap"><img class="avatar ${s.live?"live":""}" src="${s.image}" alt="${s.name}"><span class="dot ${s.live?"live":""}"></span></div><div class="details"><h3>${s.name}</h3><p class="muted">${s.live?s.title:"Twitch · "+s.twitchName}</p></div><span class="state ${s.live?"live":""}">${s.live?"● LIVE":"OFFLINE"}</span></div><div class="actions ${s.kick?"":"single"}"><button class="channel twitch" data-url="${s.twitch}">${s.live?"รับชม":"เปิดช่อง"} Twitch</button>${s.kick?`<button class="channel kick" data-url="${s.kick}">เปิดช่อง Kick</button>`:""}</div></article>`).join("")}
+    function showPage(name){document.querySelectorAll("[data-page]").forEach(x=>x.hidden=x.dataset.page!==name);document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.go===name));document.querySelectorAll(".quick").forEach(x=>x.classList.toggle("active",x.dataset.go===name));scrollTo({top:0,behavior:"smooth"});if(tg&&tg.HapticFeedback)tg.HapticFeedback.selectionChanged()}
+    document.addEventListener("click",e=>{const go=e.target.closest("[data-go]"),url=e.target.closest("[data-url]"),community=e.target.closest("[data-community]");if(go)showPage(go.dataset.go);if(url)openLink(url.dataset.url);if(community)openLink(communityLinks[community.dataset.community])});
+    const activity=document.getElementById("activity-img"),empty=document.getElementById("activity-empty");activity.addEventListener("error",()=>{activity.hidden=true;empty.hidden=false});if(activity.complete&&!activity.naturalWidth){activity.hidden=true;empty.hidden=false}render();
   </script>
 </body>
 </html>
