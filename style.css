@@ -406,3 +406,66 @@ button, a { font: inherit; }
   .status-row { gap: 6px; }
   .status-badge { padding-inline: 5px; }
 }
+.notify-optin {
+  width: 100%;
+  margin: 12px 0 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #fff;
+  text-align: left;
+  border: 1px solid #65dfff;
+  border-radius: 15px;
+  background:
+    linear-gradient(135deg, #0b62d8, #3430d8 60%, #752ad8);
+  box-shadow:
+    0 0 18px rgba(42, 170, 255, 0.55),
+    inset 0 0 15px rgba(110, 226, 255, 0.18);
+}
+
+.notify-optin:active {
+  transform: scale(0.98);
+}
+
+.notify-optin:disabled {
+  opacity: 0.65;
+}
+
+.notify-optin.enabled {
+  border-color: #64ffc2;
+  background:
+    linear-gradient(135deg, #087c79, #125cc7);
+}
+
+.notify-bell {
+  width: 43px;
+  height: 43px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  border-radius: 12px;
+  background: rgba(4, 13, 50, 0.55);
+  box-shadow: inset 0 0 12px rgba(105, 233, 255, 0.5);
+}
+
+.notify-optin strong,
+.notify-optin small {
+  display: block;
+}
+
+.notify-optin strong {
+  font-size: 15px;
+}
+
+.notify-optin small {
+  margin-top: 3px;
+  color: #d1e9ff;
+  font-size: 10px;
+}
+
+.notify-arrow {
+  margin-left: auto;
+  font-size: 28px;
+}
