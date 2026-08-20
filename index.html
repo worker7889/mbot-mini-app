@@ -83,6 +83,52 @@ let streamers=[
 const nav=[["home","หน้าหลัก","home"],["live","ดูไลฟ์","video"],["events","กิจกรรม","gift"],["community","กลุ่มพูดคุย","chat"],["help","แจ้งปัญหา","alert"]];
 const communityLinks={channel:"https://t.me/+oR2eq3nlCnI1OWNl",group:"https://t.me/+LcKeQoIhOx83OTM9"};
 const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand();tg.setHeaderColor("#071343");tg.setBackgroundColor("#02051b")}
+  const notifyButton =
+  document.querySelector("#notify-optin");
+
+if (notifyButton) {
+  notifyButton.addEventListener("click", () => {
+    if (!tg || !tg.requestWriteAccess) {
+      window.open(
+        "https://t.me/MeiliexBot?start=live_alert",
+        "_blank"
+      );
+      return;
+    }
+
+    notifyButton.disabled = true;
+
+    tg.requestWriteAccess((granted) => {
+      notifyButton.disabled = false;
+
+      if (granted) {
+        notifyButton.classList.add("enabled");
+
+        notifyButton.innerHTML = `
+          <span class="notify-bell">✓</span>
+          <span>
+            <strong>เปิดแจ้งเตือนแล้ว</strong>
+            <small>เราจะแจ้งเมื่อสตรีมเมอร์เริ่มไลฟ์</small>
+          </span>
+        `;
+
+        if (tg.HapticFeedback) {
+          tg.HapticFeedback.notificationOccurred(
+            "success"
+          );
+        }
+
+        tg.showAlert(
+          "เปิดการแจ้งเตือนไลฟ์เรียบร้อยแล้ว"
+        );
+      } else {
+        tg.showAlert(
+          "ยังไม่ได้อนุญาตการแจ้งเตือน"
+        );
+      }
+    });
+  });
+}
 function openURL(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener")}
 function safeText(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}
 function render(){
