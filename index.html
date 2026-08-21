@@ -480,7 +480,40 @@ const track=document.querySelector("#hero-track");track.addEventListener("scroll
 const activity=document.querySelector("#activity-image"),placeholder=document.querySelector("#activity-placeholder");activity.addEventListener("error",()=>{activity.hidden=true;placeholder.hidden=false});placeholder.hidden=true;
 render();
 loadLiveStatus();
-setInterval(loadLiveStatus,REFRESH_INTERVAL);
+let liveStatusTimer = null;
+
+function startLiveStatusUpdates() {
+  if (liveStatusTimer) {
+    clearInterval(liveStatusTimer);
+  }
+
+  liveStatusTimer = setInterval(
+    loadLiveStatus,
+    REFRESH_INTERVAL
+  );
+}
+
+function stopLiveStatusUpdates() {
+  if (liveStatusTimer) {
+    clearInterval(liveStatusTimer);
+    liveStatusTimer = null;
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    // หยุดเรียก Worker เมื่อ Mini App ถูกย่อหรือออกจากหน้าจอ
+    stopLiveStatusUpdates();
+  } else {
+    // กลับเข้ามาแล้วอัปเดตทันที ก่อนเริ่มจับเวลาใหม่
+    loadLiveStatus();
+    startLiveStatusUpdates();
+  }
+});
+
+if (!document.hidden) {
+  startLiveStatusUpdates();
+}
 </script>
 </body>
 </html>
