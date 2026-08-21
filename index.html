@@ -68,8 +68,96 @@
   </div>
 
   <nav class="bottom-nav" id="bottom-nav"></nav>
-</main>
+  <footer class="app-footer">
+  <span>@meichx_bot</span>
 
+  <button
+    type="button"
+    id="privacy-open"
+    class="privacy-link"
+  >
+    นโยบายความเป็นส่วนตัว
+  </button>
+</footer>
+</main>
+<div
+  class="privacy-modal"
+  id="privacy-modal"
+  hidden
+>
+  <div class="privacy-backdrop"></div>
+
+  <section
+    class="privacy-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="privacy-title"
+  >
+    <button
+      type="button"
+      class="privacy-close"
+      id="privacy-close"
+      aria-label="ปิด"
+    >
+      ×
+    </button>
+
+    <small>PRIVACY NOTICE</small>
+    <h2 id="privacy-title">
+      นโยบายความเป็นส่วนตัว
+    </h2>
+
+    <div class="privacy-content">
+      <h3>ข้อมูลที่ระบบจัดเก็บ</h3>
+      <p>
+        ระบบจัดเก็บเฉพาะ Telegram Chat ID,
+        เวลาที่สมัคร และช่องทางที่ใช้สมัคร
+        เพื่อใช้ส่งการแจ้งเตือนไลฟ์เท่านั้น
+      </p>
+
+      <h3>ข้อมูลที่ระบบไม่จัดเก็บ</h3>
+      <p>
+        ระบบไม่ขอเบอร์โทรศัพท์ รหัสผ่าน
+        ข้อมูลการเงิน หรือข้อความส่วนตัวของผู้ใช้
+      </p>
+
+      <h3>การใช้งานข้อมูล</h3>
+      <p>
+        ข้อมูลใช้สำหรับตรวจสอบสถานะการสมัคร
+        และส่งข้อความแจ้งเตือนผ่าน MeiliexBot
+        เท่านั้น ไม่มีการจำหน่ายข้อมูลให้บุคคลอื่น
+      </p>
+
+      <h3>การยกเลิกและลบข้อมูล</h3>
+      <p>
+        ผู้ใช้สามารถแตะปุ่ม “เปิดแจ้งเตือนแล้ว”
+        ใน Mini App หรือส่งคำสั่ง /stop
+        เพื่อลบข้อมูลการสมัครได้ทุกเมื่อ
+      </p>
+
+      <h3>ลิงก์ภายนอก</h3>
+      <p>
+        Mini App มีลิงก์ไปยัง Twitch, Kick,
+        Telegram และ LINE ซึ่งอยู่ภายใต้นโยบาย
+        ของแต่ละแพลตฟอร์ม
+      </p>
+
+      <div class="privacy-note">
+        Mini App นี้เป็นศูนย์รวมสถานะไลฟ์
+        และช่องทาง Community
+        ไม่ใช่บริการรับฝากเงินหรือรับเดิมพัน
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="privacy-confirm"
+      id="privacy-confirm"
+    >
+      รับทราบ
+    </button>
+  </section>
+</div>
 <script>
 const icon=n=>`<svg class="icon"><use href="#${n}"/></svg>`;
 const API_URL="https://meiliex-live-status-api.worker7889.workers.dev/";
