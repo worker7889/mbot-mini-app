@@ -86,49 +86,194 @@ const tg=window.Telegram&&window.Telegram.WebApp;if(tg){tg.ready();tg.expand();t
   const notifyButton =
   document.querySelector("#notify-optin");
 
-if (notifyButton) {
-  notifyButton.addEventListener("click", () => {
-    if (!tg || !tg.requestWriteAccess) {
-      window.open(
-        "https://t.me/MeiliexBot?start=live_alert",
-        "_blank"
-      );
-      return;
-    }
+let notificationSubscribed = false;
 
-    notifyButton.disabled = true;
+function updateNotificationButton(subscribed) {
+  notificationSubscribed = subscribed;
 
-    tg.requestWriteAccess((granted) => {
-      notifyButton.disabled = false;
+  if (!notifyButton) return;
 
-      if (granted) {
-        notifyButton.classList.add("enabled");
+  notifyButton.disabled = false;
+  notifyButton.classList.toggle(
+    "enabled",
+    subscribed
+  );
 
-        notifyButton.innerHTML = `
-          <span class="notify-bell">✓</span>
-          <span>
-            <strong>เปิดแจ้งเตือนแล้ว</strong>
-            <small>เราจะแจ้งเมื่อสตรีมเมอร์เริ่มไลฟ์</small>
-          </span>
-        `;
-
-        if (tg.HapticFeedback) {
-          tg.HapticFeedback.notificationOccurred(
-            "success"
-          );
-        }
-
-        tg.showAlert(
-          "เปิดการแจ้งเตือนไลฟ์เรียบร้อยแล้ว"
-        );
-      } else {
-        tg.showAlert(
-          "ยังไม่ได้อนุญาตการแจ้งเตือน"
-        );
-      }
-    });
-  });
+  if (subscribed) {
+    notifyButton.innerHTML = `
+      <span class="notify-bell">✓</span>
+      <span>
+        <strong>เปิดแจ้งเตือนแล้ว</strong>
+        <small>แตะอีกครั้งหากต้องการปิดแจ้งเตือน</small>
+      </span>
+      <span class="notify-arrow">›</span>
+    `;
+  } else {
+    notifyButton.innerHTML = `
+      <span class="notify-bell">🔔</span>
+      <span>
+        <strong>เปิดแจ้งเตือนไลฟ์</strong>
+        <small>รับแจ้งเตือนเมื่อสตรีมเมอร์เริ่มไลฟ์</small>
+      </span>
+      <span class="notify-arrow">›</span>
+    `;
+  }
 }
+
+async function subscriptionRequest(action) {
+  if (!tg || !tg.initData) {
+    throw new Error(
+      "กรุณาเปิด Mini App ผ่าน Telegram"
+    );
+  }
+
+  const response = await fetch(
+    `${API_URL}subscription`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action,
+        initData: tg.initData,
+      }),
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    throw new Error(
+      result.error ||
+      "ไม่สามารถตรวจสอบสถานะได้"
+    );
+  }
+
+  return result;
+}
+
+async function checkNotificationStatus() {
+  if (!notifyButton) return;
+
+  if (!tg || !tg.initData) {
+    updateNotificationButton(false);
+    return;
+  }
+
+  notifyButton.disabled = true;
+
+  try {
+    const result =
+      await subscriptionRequest("status");
+
+    updateNotificationButton(
+      result.subscribed
+    );
+  } catch (error) {
+    console.error(
+      "Subscription status error:",
+      error
+    );
+
+    updateNotificationButton(false);
+  }
+}
+
+if (notifyButton) {
+  notifyButton.addEventListener(
+    "click",
+    () => {
+      if (!tg || !tg.initData) {
+        window.open(
+          "https://t.me/MeiliexBot?start=live_alert",
+          "_blank"
+        );
+        return;
+      }
+
+      if (notificationSubscribed) {
+        tg.showConfirm(
+          "ต้องการปิดการแจ้งเตือนไลฟ์หรือไม่?",
+          async (confirmed) => {
+            if (!confirmed) return;
+
+            notifyButton.disabled = true;
+
+            try {
+              const result =
+                await subscriptionRequest(
+                  "unsubscribe"
+                );
+
+              updateNotificationButton(
+                result.subscribed
+              );
+
+              tg.showAlert(
+                "ปิดการแจ้งเตือนไลฟ์แล้ว"
+              );
+            } catch (error) {
+              updateNotificationButton(true);
+
+              tg.showAlert(
+                "ปิดการแจ้งเตือนไม่สำเร็จ กรุณาลองใหม่"
+              );
+            }
+          }
+        );
+
+        return;
+      }
+
+      notifyButton.disabled = true;
+
+      tg.requestWriteAccess(
+        async (granted) => {
+          if (!granted) {
+            updateNotificationButton(false);
+
+            tg.showAlert(
+              "ยังไม่ได้อนุญาตให้บอทส่งข้อความ"
+            );
+
+            return;
+          }
+
+          try {
+            const result =
+              await subscriptionRequest(
+                "subscribe"
+              );
+
+            updateNotificationButton(
+              result.subscribed
+            );
+
+            if (tg.HapticFeedback) {
+              tg.HapticFeedback
+                .notificationOccurred(
+                  "success"
+                );
+            }
+
+            tg.showAlert(
+              "เปิดการแจ้งเตือนไลฟ์เรียบร้อยแล้ว"
+            );
+          } catch (error) {
+            updateNotificationButton(false);
+
+            tg.showAlert(
+              "เปิดการแจ้งเตือนไม่สำเร็จ กรุณาลองใหม่"
+            );
+          }
+        }
+      );
+    }
+  );
+}
+
+checkNotificationStatus();
 function openURL(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener")}
 function safeText(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}
 function render(){
