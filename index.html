@@ -425,6 +425,49 @@ async function loadLiveStatus(){
    const remote=statusByLogin.get(local.handle.toLowerCase())||data.streamers.find(item=>item.id===local.id);
    return remote?{...local,order,live:Boolean(remote.live),title:remote.title||"",game:remote.game||remote.game_name||"",viewers:Number(remote.viewers||remote.viewer_count||0),startedAt:remote.started_at||null}:{...local,order,live:false};
   }).sort((a,b)=>Number(b.live)-Number(a.live)||a.order-b.order);
+   const privacyModal =
+  document.querySelector("#privacy-modal");
+
+const privacyOpen =
+  document.querySelector("#privacy-open");
+
+const privacyClose =
+  document.querySelector("#privacy-close");
+
+const privacyConfirm =
+  document.querySelector("#privacy-confirm");
+
+function openPrivacy() {
+  privacyModal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closePrivacy() {
+  privacyModal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+privacyOpen?.addEventListener(
+  "click",
+  openPrivacy
+);
+
+privacyClose?.addEventListener(
+  "click",
+  closePrivacy
+);
+
+privacyConfirm?.addEventListener(
+  "click",
+  closePrivacy
+);
+
+privacyModal
+  ?.querySelector(".privacy-backdrop")
+  ?.addEventListener(
+    "click",
+    closePrivacy
+  );
   render();
   setSyncState(`● อัปเดต ${new Date().toLocaleTimeString("th-TH",{hour:"2-digit",minute:"2-digit"})}`,"ok");
  }catch(error){
