@@ -277,7 +277,46 @@ checkNotificationStatus();
 function openURL(url){if(!url){alert("ยังไม่ได้ใส่ลิงก์ Telegram");return}if(tg&&tg.openLink)tg.openLink(url);else window.open(url,"_blank","noopener")}
 function safeText(value){return String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]))}
 function render(){
- document.querySelector("#hero-track").innerHTML=streamers.map(s=>`<article class="hero ${s.accent}" style="background-image:url('${s.banner}')"><div class="hero-shade"></div><div class="hero-content"><span class="live-pill ${s.live?"on":"off"}">${s.live?"● LIVE NOW":"OFFLINE"}</span><h1>${s.name}</h1><p>${s.live?safeText(s.title||"กำลังไลฟ์สด! กดเพื่อดูรายละเอียดและรับชม"):"ยังไม่ได้ไลฟ์ แวะไปติดตามช่องไว้ก่อนได้เลย"}</p><a class="hero-button ${s.live? "กำลังไลฟ์สด! กดเพื่อดูรายละเอียดและรับชม": "ยังไม่ได้ไลฟ์ แวะไปติดตามช่องไว้ก่อนได้เลย"}" href="${s.twitch}" target="_blank" rel="noopener">${s.live? "กำลังไลฟ์สด! เปิด Mini App เพื่อรับชม" : "Twitch · " + s.handle} ${icon("chevron")}</a></div></article>`).join("");
+ document.querySelector(
+  "#hero-track"
+).innerHTML = streamers
+  .map(
+    (s) => `
+      <article
+        class="hero ${s.accent}"
+        style="background-image:url('${s.banner}')"
+      >
+        <div class="hero-shade"></div>
+
+        <div class="hero-content">
+          <span class="live-pill ${s.live ? "on" : "off"}">
+            ${s.live ? "● LIVE NOW" : "OFFLINE"}
+          </span>
+
+          <h1>${s.name}</h1>
+
+          <p>
+            ${
+              s.live
+                ? "กำลังไลฟ์สด! กดเพื่อดูรายละเอียดและรับชม"
+                : "ยังไม่ได้ไลฟ์ แวะไปติดตามช่องไว้ก่อนได้เลย"
+            }
+          </p>
+
+          <a
+            class="hero-button ${s.live ? "watch" : "channel"}"
+            href="${s.twitch}"
+            target="_blank"
+            rel="noopener"
+          >
+            ${s.live ? "รับชมเลย" : "ไปที่ช่อง"}
+            ${icon("chevron")}
+          </a>
+        </div>
+      </article>
+    `
+  )
+  .join("");
  document.querySelector("#quick-menu").innerHTML=nav.slice(1).map((n,i)=>`<button class="skill-button c${i}" data-go="${n[0]}"><b>${icon(n[2])}</b><span>${n[1]}</span></button>`).join("");
  document.querySelector("#status-list").innerHTML=streamers.map(s=>`<div class="status-row"><i class="energy ${s.live?"on":""}"></i><div class="avatar-frame"><img src="${s.avatar}" alt="${s.name}"></div><div class="status-copy"><strong>${s.name}</strong><small>${s.live?safeText(s.title||"กำลังไลฟ์สด! กดเพื่อดูรายละเอียดและรับชม"):"Twitch · "+s.handle}</small></div><span class="status-badge ${s.live?"on":""}">${s.live?"● LIVE":"OFFLINE"}</span><a class="twitch-mini" href="${s.twitch}" target="_blank" rel="noopener">T</a></div>`).join("");
  document.querySelector("#streamer-cards").innerHTML=streamers.map(s=>`<article class="streamer-card fantasy-panel"><div class="stream-head"><div class="avatar-frame large"><img src="${s.avatar}" alt="${s.name}"></div><div><h2>${s.name}</h2><span class="status-badge ${s.live?"on":""}">${s.live?"● กำลังไลฟ์":"OFFLINE"}</span></div></div><div class="channel-grid"><a class="twitch" href="${s.twitch}" target="_blank">Twitch ${icon("chevron")}</a><a class="kick" href="${s.kick}" target="_blank">Kick ${icon("chevron")}</a></div></article>`).join("");
